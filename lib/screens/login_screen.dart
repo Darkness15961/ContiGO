@@ -106,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text(
                       '¿Olvidaste tu contraseña?',
                       style: GoogleFonts.dmSans(
-                        color: AppColors.accentPink,
+                        color: AppColors.orange,
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
                       ),

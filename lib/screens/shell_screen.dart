@@ -167,7 +167,7 @@ class _CreateNavButton extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Color(0x406B4EFF),
+                      color: Color(0x6681308C),
                       blurRadius: 8,
                       offset: Offset(0, 3),
                     ),

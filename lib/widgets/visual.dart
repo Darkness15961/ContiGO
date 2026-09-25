@@ -24,7 +24,7 @@ class BlotchBackground extends StatelessWidget {
       child: Container(
         height: height,
         width: double.infinity,
-        color: AppColors.violet,
+        color: AppColors.primary,
         child: CustomPaint(
           painter: const _BlotchPainter(),
           // Sin StackFit.expand: el alto lo define el child (evita pantalla en blanco en ListView).
@@ -42,8 +42,8 @@ class _BlotchPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
 
-    // Mancha grande superior-izquierda (como referencia)
-    paint.color = AppColors.violetBlotch.withValues(alpha: 0.55);
+    // Mancha grande superior-izquierda
+    paint.color = AppColors.deep.withValues(alpha: 0.55);
     canvas.drawOval(
       Rect.fromCenter(
         center: Offset(size.width * 0.12, size.height * 0.05),
@@ -54,7 +54,7 @@ class _BlotchPainter extends CustomPainter {
     );
 
     // Mancha derecha
-    paint.color = AppColors.violetDeep.withValues(alpha: 0.45);
+    paint.color = AppColors.primary.withValues(alpha: 0.35);
     canvas.drawOval(
       Rect.fromCenter(
         center: Offset(size.width * 0.95, size.height * 0.35),
@@ -64,8 +64,8 @@ class _BlotchPainter extends CustomPainter {
       paint,
     );
 
-    // Mancha inferior suave
-    paint.color = const Color(0x33FFFFFF);
+    // Mancha inferior suave (crema)
+    paint.color = AppColors.cream.withValues(alpha: 0.18);
     canvas.drawOval(
       Rect.fromCenter(
         center: Offset(size.width * 0.55, size.height * 1.05),
@@ -157,7 +157,7 @@ class SoftCard extends StatelessWidget {
 class AppShadows {
   static List<BoxShadow> get card => [
         BoxShadow(
-          color: const Color(0xFF4F2FD6).withValues(alpha: 0.07),
+          color: AppColors.deep.withValues(alpha: 0.08),
           blurRadius: 18,
           offset: const Offset(0, 8),
         ),
@@ -193,11 +193,11 @@ class _StudentsPainter extends CustomPainter {
     final paint = Paint()..style = PaintingStyle.fill;
 
     // Medalla
-    paint.color = const Color(0xFFFFC857);
+    paint.color = AppColors.orange;
     canvas.drawCircle(Offset(cx, cy - 58), 16, paint);
-    paint.color = const Color(0xFFFFE6A3);
+    paint.color = AppColors.cream;
     canvas.drawCircle(Offset(cx, cy - 58), 9, paint);
-    paint.color = AppColors.violetDeep;
+    paint.color = AppColors.deep;
     final tp = TextPainter(
       text: const TextSpan(
         text: '1',
@@ -208,7 +208,7 @@ class _StudentsPainter extends CustomPainter {
     tp.paint(canvas, Offset(cx - tp.width / 2, cy - 58 - tp.height / 2));
 
     // Cuerpo izquierdo
-    paint.color = const Color(0xFFE8DEFF);
+    paint.color = AppColors.cream;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromCenter(center: Offset(cx - 32, cy + 18), width: 52, height: 70),
@@ -216,11 +216,11 @@ class _StudentsPainter extends CustomPainter {
       ),
       paint,
     );
-    paint.color = const Color(0xFFFFE0C2);
+    paint.color = const Color(0xFFE8C4A8);
     canvas.drawCircle(Offset(cx - 32, cy - 18), 22, paint);
 
     // Cuerpo derecho
-    paint.color = const Color(0xFFD4F5E9);
+    paint.color = AppColors.white;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromCenter(center: Offset(cx + 34, cy + 16), width: 50, height: 68),
@@ -228,11 +228,11 @@ class _StudentsPainter extends CustomPainter {
       ),
       paint,
     );
-    paint.color = const Color(0xFFFFD8B5);
+    paint.color = const Color(0xFFD4A574);
     canvas.drawCircle(Offset(cx + 34, cy - 20), 21, paint);
 
     // Libros
-    paint.color = AppColors.violet;
+    paint.color = AppColors.primary;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(cx - 48, cy + 8, 18, 24),
@@ -240,7 +240,7 @@ class _StudentsPainter extends CustomPainter {
       ),
       paint,
     );
-    paint.color = AppColors.accentWarm;
+    paint.color = AppColors.orange;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(cx + 22, cy + 6, 18, 24),
