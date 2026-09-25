@@ -46,7 +46,7 @@ class _ConnectionsScreenState extends State<ConnectionsScreen> {
                       const Icon(Icons.handshake, color: AppColors.white, size: 26),
                       const SizedBox(width: 10),
                       Text(
-                        'Matches',
+                        'Match',
                         style: GoogleFonts.dmSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w800,
@@ -91,7 +91,7 @@ class _ConnectionsScreenState extends State<ConnectionsScreen> {
             Padding(
               padding: const EdgeInsets.all(40),
               child: Text(
-                'Aún no hay matches en esta sección.',
+                'Aún no hay match en esta sección.',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.dmSans(color: AppColors.grayDark),
               ),

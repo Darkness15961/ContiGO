@@ -192,9 +192,9 @@ El violeta se intensifica en: *Me interesa → Match → Conexión → Reunión*
 
 ## MVP (15 vistas)
 
-Splash · Onboarding · Login · Registro · Crear perfil · Inicio · Explorar · Detalle proyecto · Crear proyecto · Solicitud de interés · Match · Matches · Conversación · Proponer reunión · Mi perfil
+Splash · Onboarding · Login · Registro · Crear perfil · Inicio · Explorar · Detalle proyecto · Crear proyecto · Solicitud de interés · Match · Conversación · Proponer reunión · Mi perfil
 
-Navegación: **Inicio · Explorar · ＋ Crear · Matches (apretón de manos) · Perfil**
+Navegación: **Inicio · Explorar · ＋ Crear · Match (apretón de manos) · Perfil**
 
 ---
 

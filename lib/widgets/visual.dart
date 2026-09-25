@@ -21,16 +21,14 @@ class BlotchBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: borderRadius ?? BorderRadius.zero,
-      child: SizedBox(
+      child: Container(
         height: height,
         width: double.infinity,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            const ColoredBox(color: AppColors.violet),
-            const CustomPaint(painter: _BlotchPainter()),
-            if (child != null) child!,
-          ],
+        color: AppColors.violet,
+        child: CustomPaint(
+          painter: const _BlotchPainter(),
+          // Sin StackFit.expand: el alto lo define el child (evita pantalla en blanco en ListView).
+          child: child,
         ),
       ),
     );
@@ -86,19 +84,20 @@ class _BlotchPainter extends CustomPainter {
 class WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
+    final wave = size.height < 48 ? size.height * 0.2 : 36.0;
     final path = Path()
-      ..lineTo(0, size.height - 36)
+      ..lineTo(0, size.height - wave)
       ..quadraticBezierTo(
         size.width * 0.25,
         size.height,
         size.width * 0.5,
-        size.height - 22,
+        size.height - wave * 0.6,
       )
       ..quadraticBezierTo(
         size.width * 0.75,
-        size.height - 44,
+        size.height - wave * 1.2,
         size.width,
-        size.height - 18,
+        size.height - wave * 0.5,
       )
       ..lineTo(size.width, 0)
       ..close();

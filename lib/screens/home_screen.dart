@@ -135,7 +135,7 @@ class HomeScreen extends StatelessWidget {
                       child: SoftCard(
                         padding: const EdgeInsets.all(14),
                         child: _StatBlock(
-                          label: 'Matches',
+                          label: 'Match',
                           value: '$matchCount',
                           progress: (matchCount / 5).clamp(0.15, 1),
                           color: AppColors.accentPink,

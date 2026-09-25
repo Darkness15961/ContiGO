@@ -78,7 +78,7 @@ class _ShellScreenState extends State<ShellScreen> {
                 _NavItem(
                   icon: Icons.handshake_outlined,
                   activeIcon: Icons.handshake,
-                  label: 'Matches',
+                  label: 'Match',
                   selected: _index == 3,
                   onTap: () => setState(() => _index = 3),
                 ),
