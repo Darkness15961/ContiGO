@@ -26,144 +26,137 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _enter() {
-    final repo = MockRepository();
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => ShellScreen(repo: repo)),
+      MaterialPageRoute(builder: (_) => ShellScreen(repo: MockRepository())),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final top = MediaQuery.sizeOf(context).height * 0.42;
+    final h = MediaQuery.sizeOf(context).height;
 
     return Scaffold(
-      backgroundColor: AppColors.bgSoft,
+      backgroundColor: AppColors.white,
       body: Column(
         children: [
           SizedBox(
-            height: top,
-            child: BlotchBackground(
-              child: SafeArea(
-                bottom: false,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 12),
-                    Text(
-                      'ContiGO',
-                      style: GoogleFonts.fraunces(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.white,
+            height: h * 0.42,
+            child: ClipPath(
+              clipper: WaveClipper(),
+              child: BlotchBackground(
+                child: SafeArea(
+                  bottom: false,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 8),
+                      Text(
+                        'ContiGO',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.white,
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    const ConnectionIllustration(size: 150),
-                    const SizedBox(height: 24),
-                  ],
+                      const Spacer(),
+                      const ConnectionIllustration(size: 168),
+                      SizedBox(height: h * 0.04),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
           Expanded(
-            child: Transform.translate(
-              offset: const Offset(0, -28),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-                  boxShadow: AppShadows.card,
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(28, 8, 28, 24),
+              children: [
+                Text(
+                  'Iniciar sesión',
+                  style: displayStyle(size: 30, color: AppColors.black),
                 ),
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(28, 32, 28, 28),
-                  children: [
-                    Text(
-                      'Iniciar sesión',
-                      style: displayStyle(size: 28, color: AppColors.violetDeep),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Correo institucional universitario',
+                const SizedBox(height: 6),
+                Text(
+                  'Usa tu correo institucional',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 13,
+                    color: AppColors.grayDark,
+                  ),
+                ),
+                const SizedBox(height: 22),
+                TextField(
+                  controller: _email,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    hintText: 'Correo institucional',
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _password,
+                  obscureText: true,
+                  decoration: const InputDecoration(hintText: 'Contraseña'),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      '¿Olvidaste tu contraseña?',
                       style: GoogleFonts.dmSans(
-                        fontSize: 13,
-                        color: AppColors.grayDark,
+                        color: AppColors.accentPink,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    TextField(
-                      controller: _email,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        hintText: 'Correo institucional',
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _enter,
+                        child: const Text('Iniciar sesión'),
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _password,
-                      obscureText: true,
-                      decoration: const InputDecoration(hintText: 'Contraseña'),
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          '¿Olvidaste tu contraseña?',
-                          style: GoogleFonts.dmSans(
-                            color: AppColors.violetMid,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: _enter,
-                            child: const Text('Iniciar sesión'),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Container(
-                          width: 52,
-                          height: 52,
-                          decoration: BoxDecoration(
+                    const SizedBox(width: 12),
+                    SizedBox(
+                      width: 54,
+                      height: 54,
+                      child: ElevatedButton(
+                        onPressed: _enter,
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColors.violet, width: 1.5),
-                          ),
-                          child: const Icon(
-                            Icons.handshake_outlined,
-                            color: AppColors.violet,
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '¿No tienes cuenta? ',
-                          style: GoogleFonts.dmSans(color: AppColors.grayDark),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const RegisterScreen(),
-                              ),
-                            );
-                          },
-                          child: const Text('Crear cuenta'),
-                        ),
-                      ],
+                        child: const Icon(Icons.handshake, size: 24),
+                      ),
                     ),
                   ],
                 ),
-              ),
+                const SizedBox(height: 18),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '¿No tienes cuenta? ',
+                      style: GoogleFonts.dmSans(color: AppColors.grayDark),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const RegisterScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text('Crear cuenta'),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

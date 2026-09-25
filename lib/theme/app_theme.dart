@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// ContiGO — violeta Continental como identidad de conexión.
-/// 70% blanco/claros · 20% violeta · 10% negro/contraste
+/// Paleta alineada al mockup de referencia (violeta + manchas + blanco).
 class AppColors {
-  static const violet = Color(0xFF6C2BD9);
-  static const violetDeep = Color(0xFF4B1FA6);
-  static const violetSoft = Color(0xFFF1EBFF);
+  /// Header / botones principales
+  static const violet = Color(0xFF6B4EFF);
+  /// Manchas y estados activos
+  static const violetDeep = Color(0xFF4F2FD6);
+  /// Mancha más oscura
+  static const violetBlotch = Color(0xFF3D22B0);
+  /// Fondos chips / soft
+  static const violetSoft = Color(0xFFEEE8FF);
+  static const violetMist = Color(0xFFF6F3FF);
   static const white = Color(0xFFFFFFFF);
-  static const black = Color(0xFF171717);
-  static const grayDark = Color(0xFF555555);
-  static const grayLight = Color(0xFFE8E8E8);
-  static const bgSoft = Color(0xFFF8F7FA);
-  static const violetMid = Color(0xFF7C3AED);
-  static const accentWarm = Color(0xFFFF8A4C);
+  static const black = Color(0xFF1A1A2E);
+  static const grayDark = Color(0xFF6B6B80);
+  static const grayLight = Color(0xFFE8E6F0);
+  static const inputFill = Color(0xFFF3F2F8);
+  static const bgSoft = Color(0xFFF7F6FB);
+  static const accentWarm = Color(0xFFFF8A3D);
+  static const accentPink = Color(0xFFC084FC);
+  static const success = Color(0xFF22C55E);
 }
 
 class AppTheme {
@@ -26,7 +33,6 @@ class AppTheme {
         primary: AppColors.violet,
         onPrimary: AppColors.white,
         secondary: AppColors.violetDeep,
-        onSecondary: AppColors.white,
         surface: AppColors.white,
         onSurface: AppColors.black,
         outline: AppColors.grayLight,
@@ -44,9 +50,9 @@ class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle: GoogleFonts.fraunces(
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
+        titleTextStyle: GoogleFonts.dmSans(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
           color: AppColors.black,
         ),
       ),
@@ -57,8 +63,7 @@ class AppTheme {
           disabledBackgroundColor: AppColors.violetSoft,
           disabledForegroundColor: AppColors.grayDark,
           elevation: 0,
-          shadowColor: AppColors.violet.withValues(alpha: 0.35),
-          minimumSize: const Size.fromHeight(52),
+          minimumSize: const Size.fromHeight(54),
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 15),
@@ -68,8 +73,7 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.violetDeep,
           side: const BorderSide(color: AppColors.violet, width: 1.4),
-          minimumSize: const Size.fromHeight(52),
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          minimumSize: const Size.fromHeight(54),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w600, fontSize: 15),
         ),
@@ -77,14 +81,14 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.violet,
-          textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 14),
+          textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 13),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: const Color(0xFFF3F0F8),
-        hintStyle: GoogleFonts.dmSans(color: AppColors.grayDark),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        fillColor: AppColors.inputFill,
+        hintStyle: GoogleFonts.dmSans(color: AppColors.grayDark, fontSize: 14),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
@@ -95,19 +99,17 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.violet, width: 1.5),
+          borderSide: const BorderSide(color: AppColors.violet, width: 1.4),
         ),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.violetSoft,
         selectedColor: AppColors.violet,
-        labelStyle: GoogleFonts.dmSans(fontSize: 13, color: AppColors.violetDeep),
-        secondaryLabelStyle: GoogleFonts.dmSans(fontSize: 13, color: AppColors.white),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        labelStyle: GoogleFonts.dmSans(fontSize: 12, color: AppColors.violetDeep),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         side: BorderSide.none,
       ),
-      dividerTheme: const DividerThemeData(color: AppColors.grayLight, thickness: 1),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.white,
         selectedItemColor: AppColors.violet,
@@ -120,23 +122,23 @@ class AppTheme {
 }
 
 TextStyle displayStyle({
-  double size = 32,
-  FontWeight weight = FontWeight.w600,
+  double size = 28,
+  FontWeight weight = FontWeight.w700,
   Color? color,
 }) {
-  return GoogleFonts.fraunces(
+  return GoogleFonts.dmSans(
     fontSize: size,
     fontWeight: weight,
     color: color ?? AppColors.black,
-    height: 1.15,
+    height: 1.2,
   );
 }
 
-TextStyle brandStyle({double size = 36}) {
-  return GoogleFonts.fraunces(
+TextStyle brandStyle({double size = 36, Color? color}) {
+  return GoogleFonts.dmSans(
     fontSize: size,
-    fontWeight: FontWeight.w700,
-    color: AppColors.violetDeep,
-    letterSpacing: -0.5,
+    fontWeight: FontWeight.w800,
+    color: color ?? AppColors.violetDeep,
+    letterSpacing: -0.4,
   );
 }

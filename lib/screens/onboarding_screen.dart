@@ -17,21 +17,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _index = 0;
 
   static const _slides = [
-    (
-      '01',
-      'Ten una idea',
-      'Convierte aquello que tienes en mente en un proyecto.',
-    ),
-    (
-      '02',
-      'Encuentra personas',
-      'Descubre estudiantes que conecten con tu idea.',
-    ),
-    (
-      '03',
-      'Construyan juntos',
-      'Las habilidades pueden aprenderse. La conexión es el comienzo.',
-    ),
+    ('01', 'Ten una idea', 'Convierte aquello que tienes en mente en un proyecto.'),
+    ('02', 'Encuentra personas', 'Descubre estudiantes que conecten con tu idea.'),
+    ('03', 'Construyan juntos', 'Las habilidades pueden aprenderse. La conexión es el comienzo.'),
   ];
 
   @override
@@ -55,99 +43,92 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final h = MediaQuery.sizeOf(context).height;
     return Scaffold(
-      backgroundColor: AppColors.bgSoft,
+      backgroundColor: AppColors.white,
       body: Column(
         children: [
           SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.38,
-            child: BlotchBackground(
-              child: const SafeArea(
-                child: Center(child: ConnectionIllustration(size: 140)),
+            height: h * 0.38,
+            child: ClipPath(
+              clipper: WaveClipper(),
+              child: const BlotchBackground(
+                child: SafeArea(
+                  child: Center(child: ConnectionIllustration(size: 150)),
+                ),
               ),
             ),
           ),
           Expanded(
-            child: Transform.translate(
-              offset: const Offset(0, -24),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-                  boxShadow: AppShadows.card,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(28, 28, 28, 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('ContiGO', style: brandStyle(size: 26)),
-                      Expanded(
-                        child: PageView.builder(
-                          controller: _page,
-                          itemCount: _slides.length,
-                          onPageChanged: (i) => setState(() => _index = i),
-                          itemBuilder: (_, i) {
-                            final s = _slides[i];
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 20),
-                                Text(
-                                  s.$1,
-                                  style: GoogleFonts.dmSans(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.violet,
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                Text(s.$2, style: displayStyle(size: 30)),
-                                const SizedBox(height: 12),
-                                Text(
-                                  s.$3,
-                                  style: GoogleFonts.dmSans(
-                                    fontSize: 16,
-                                    height: 1.5,
-                                    color: AppColors.grayDark,
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          for (var i = 0; i < _slides.length; i++)
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              margin: const EdgeInsets.only(right: 6),
-                              width: i == _index ? 22 : 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: i == _index
-                                    ? AppColors.violet
-                                    : AppColors.grayLight,
-                                borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(28, 12, 28, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('ContiGO', style: brandStyle(size: 24)),
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _page,
+                      itemCount: _slides.length,
+                      onPageChanged: (i) => setState(() => _index = i),
+                      itemBuilder: (_, i) {
+                        final s = _slides[i];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 18),
+                            Text(
+                              s.$1,
+                              style: GoogleFonts.dmSans(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.violet,
                               ),
                             ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _next,
-                          child: Text(
-                            _index == _slides.length - 1 ? 'Comenzar' : 'Siguiente',
+                            const SizedBox(height: 10),
+                            Text(s.$2, style: displayStyle(size: 28)),
+                            const SizedBox(height: 10),
+                            Text(
+                              s.$3,
+                              style: GoogleFonts.dmSans(
+                                fontSize: 15,
+                                height: 1.5,
+                                color: AppColors.grayDark,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      for (var i = 0; i < _slides.length; i++)
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          margin: const EdgeInsets.only(right: 6),
+                          width: i == _index ? 22 : 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: i == _index
+                                ? AppColors.violet
+                                : AppColors.grayLight,
+                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                      ),
                     ],
                   ),
-                ),
+                  const SizedBox(height: 18),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _next,
+                      child: Text(
+                        _index == _slides.length - 1 ? 'Comenzar' : 'Siguiente',
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

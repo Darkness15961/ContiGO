@@ -175,14 +175,15 @@ Violeta = conexión · Blanco = descubrimiento · Negro = contenido
 
 | Color | Hex | Uso |
 |-------|-----|-----|
-| Violeta ContiGO | `#6C2BD9` | Botones, acciones |
-| Violeta profundo | `#4B1FA6` | Activos, match, títulos |
-| Violeta suave | `#F1EBFF` | Tarjetas, etiquetas |
-| Blanco | `#FFFFFF` | Fondo principal |
-| Negro | `#171717` | Texto |
-| Gris oscuro | `#555555` | Texto secundario |
-| Gris claro | `#E8E8E8` | Bordes |
-| Fondo suave | `#F8F7FA` | Fondos alternativos |
+| Violeta ContiGO | `#6B4EFF` | Headers, botones, nav activa |
+| Violeta profundo | `#4F2FD6` | Manchas / acentos |
+| Violeta mancha | `#3D22B0` | Blobs orgánicos |
+| Violeta suave | `#EEE8FF` | Chips, fondos suaves |
+| Blanco | `#FFFFFF` | Cards y formularios |
+| Negro | `#1A1A2E` | Texto |
+| Gris | `#6B6B80` | Texto secundario |
+| Fondo | `#F7F6FB` | Fondo app |
+| Acento cálido | `#FF8A3D` | CTAs especiales |
 
 Distribución aproximada: **70%** claros · **20%** violeta · **10%** negro.  
 El violeta se intensifica en: *Me interesa → Match → Conexión → Reunión*.

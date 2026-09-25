@@ -4,20 +4,18 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 
-/// Fondo violeta con “manchas” orgánicas + degradado (estilo ContiGO / mockup).
+/// Fondo violeta con manchas orgánicas opacas (estilo mockup).
 class BlotchBackground extends StatelessWidget {
   const BlotchBackground({
     super.key,
     this.child,
     this.height,
     this.borderRadius,
-    this.intensity = 1,
   });
 
   final Widget? child;
   final double? height;
   final BorderRadius? borderRadius;
-  final double intensity;
 
   @override
   Widget build(BuildContext context) {
@@ -29,22 +27,8 @@ class BlotchBackground extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.violet,
-                    AppColors.violetDeep,
-                    Color(0xFF3A1785),
-                  ],
-                ),
-              ),
-            ),
-            CustomPaint(
-              painter: _BlotchPainter(intensity: intensity),
-            ),
+            const ColoredBox(color: AppColors.violet),
+            const CustomPaint(painter: _BlotchPainter()),
             if (child != null) child!,
           ],
         ),
@@ -54,118 +38,86 @@ class BlotchBackground extends StatelessWidget {
 }
 
 class _BlotchPainter extends CustomPainter {
-  _BlotchPainter({required this.intensity});
-
-  final double intensity;
+  const _BlotchPainter();
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
 
-    void blotch(Offset c, double rx, double ry, Color color) {
-      paint.color = color.withValues(alpha: color.a * intensity);
-      final path = Path()
-        ..addOval(Rect.fromCenter(center: c, width: rx * 2, height: ry * 2));
-      canvas.drawPath(path, paint);
-    }
-
-    // Manchas grandes tipo liquid / organic
-    blotch(
-      Offset(size.width * 0.15, size.height * 0.2),
-      size.width * 0.42,
-      size.height * 0.38,
-      const Color(0x55FFFFFF),
-    );
-    blotch(
-      Offset(size.width * 0.85, size.height * 0.15),
-      size.width * 0.38,
-      size.height * 0.32,
-      const Color(0x442A0F6E),
-    );
-    blotch(
-      Offset(size.width * 0.7, size.height * 0.75),
-      size.width * 0.45,
-      size.height * 0.4,
-      const Color(0x338B5CF6),
-    );
-    blotch(
-      Offset(size.width * 0.05, size.height * 0.85),
-      size.width * 0.35,
-      size.height * 0.35,
-      const Color(0x402A0F6E),
+    // Mancha grande superior-izquierda (como referencia)
+    paint.color = AppColors.violetBlotch.withValues(alpha: 0.55);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.12, size.height * 0.05),
+        width: size.width * 0.9,
+        height: size.height * 0.7,
+      ),
+      paint,
     );
 
-    // Curva suave inferior (onda)
-    final wave = Path()
-      ..moveTo(0, size.height * 0.88)
+    // Mancha derecha
+    paint.color = AppColors.violetDeep.withValues(alpha: 0.45);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.95, size.height * 0.35),
+        width: size.width * 0.7,
+        height: size.height * 0.75,
+      ),
+      paint,
+    );
+
+    // Mancha inferior suave
+    paint.color = const Color(0x33FFFFFF);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(size.width * 0.55, size.height * 1.05),
+        width: size.width * 1.1,
+        height: size.height * 0.55,
+      ),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// Clip de ola inferior (login / headers).
+class WaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path()
+      ..lineTo(0, size.height - 36)
       ..quadraticBezierTo(
         size.width * 0.25,
-        size.height * 0.78,
+        size.height,
         size.width * 0.5,
-        size.height * 0.88,
+        size.height - 22,
       )
       ..quadraticBezierTo(
         size.width * 0.75,
-        size.height * 0.98,
+        size.height - 44,
         size.width,
-        size.height * 0.86,
+        size.height - 18,
       )
-      ..lineTo(size.width, size.height)
-      ..lineTo(0, size.height)
+      ..lineTo(size.width, 0)
       ..close();
-    paint.color = const Color(0x22FFFFFF);
-    canvas.drawPath(wave, paint);
+    return path;
   }
 
   @override
-  bool shouldRepaint(covariant _BlotchPainter oldDelegate) =>
-      oldDelegate.intensity != intensity;
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
 
-/// Header violeta con manchas + contenido, borde inferior curvo hacia el body.
-class ContigoHeroHeader extends StatelessWidget {
-  const ContigoHeroHeader({
-    super.key,
-    required this.child,
-    this.height = 220,
-    this.bottomOverlap = 28,
-  });
-
-  final Widget child;
-  final double height;
-  final double bottomOverlap;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: height,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned.fill(
-            child: BlotchBackground(
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(36),
-                bottomRight: Radius.circular(36),
-              ),
-              child: child,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Card blanca con sombra suave (estilo mockup).
 class SoftCard extends StatelessWidget {
   const SoftCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(18),
+    this.padding = const EdgeInsets.all(16),
     this.onTap,
     this.accentBar,
     this.margin,
+    this.radius = 20,
   });
 
   final Widget child;
@@ -173,38 +125,31 @@ class SoftCard extends StatelessWidget {
   final VoidCallback? onTap;
   final Color? accentBar;
   final EdgeInsets? margin;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
-    final card = Container(
+    final content = Container(
       margin: margin,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(radius),
         boxShadow: AppShadows.card,
+        border: accentBar == null
+            ? null
+            : Border(left: BorderSide(color: accentBar!, width: 5)),
       ),
       clipBehavior: Clip.antiAlias,
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (accentBar != null)
-              Container(width: 5, color: accentBar),
-            Expanded(
-              child: Padding(padding: padding, child: child),
-            ),
-          ],
-        ),
-      ),
+      child: Padding(padding: padding, child: child),
     );
 
-    if (onTap == null) return card;
+    if (onTap == null) return content;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(22),
-        child: card,
+        borderRadius: BorderRadius.circular(radius),
+        child: content,
       ),
     );
   }
@@ -213,21 +158,21 @@ class SoftCard extends StatelessWidget {
 class AppShadows {
   static List<BoxShadow> get card => [
         BoxShadow(
-          color: AppColors.violetDeep.withValues(alpha: 0.08),
-          blurRadius: 24,
-          offset: const Offset(0, 10),
+          color: const Color(0xFF4F2FD6).withValues(alpha: 0.07),
+          blurRadius: 18,
+          offset: const Offset(0, 8),
         ),
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.04),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
+          color: Colors.black.withValues(alpha: 0.03),
+          blurRadius: 4,
+          offset: const Offset(0, 1),
         ),
       ];
 }
 
-/// Ilustración abstracta “conexión” para login (sin assets externos).
+/// Ilustración simple tipo personajes + medalla (login).
 class ConnectionIllustration extends StatelessWidget {
-  const ConnectionIllustration({super.key, this.size = 160});
+  const ConnectionIllustration({super.key, this.size = 170});
 
   final double size;
 
@@ -236,48 +181,134 @@ class ConnectionIllustration extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: CustomPaint(painter: _ConnectionArtPainter()),
+      child: CustomPaint(painter: _StudentsPainter()),
     );
   }
 }
 
-class _ConnectionArtPainter extends CustomPainter {
+class _StudentsPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final cx = size.width / 2;
-    final cy = size.height / 2;
+    final cy = size.height / 2 + 8;
     final paint = Paint()..style = PaintingStyle.fill;
 
-    // Círculos tipo clay / soft
-    paint.color = const Color(0x55FFFFFF);
-    canvas.drawCircle(Offset(cx - 28, cy + 8), 42, paint);
-    canvas.drawCircle(Offset(cx + 30, cy + 4), 40, paint);
+    // Medalla
+    paint.color = const Color(0xFFFFC857);
+    canvas.drawCircle(Offset(cx, cy - 58), 16, paint);
+    paint.color = const Color(0xFFFFE6A3);
+    canvas.drawCircle(Offset(cx, cy - 58), 9, paint);
+    paint.color = AppColors.violetDeep;
+    final tp = TextPainter(
+      text: const TextSpan(
+        text: '1',
+        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Colors.white),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    tp.paint(canvas, Offset(cx - tp.width / 2, cy - 58 - tp.height / 2));
 
-    paint.color = Colors.white.withValues(alpha: 0.92);
-    canvas.drawCircle(Offset(cx - 28, cy), 34, paint);
-    canvas.drawCircle(Offset(cx + 30, cy - 4), 32, paint);
+    // Cuerpo izquierdo
+    paint.color = const Color(0xFFE8DEFF);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(center: Offset(cx - 32, cy + 18), width: 52, height: 70),
+        const Radius.circular(18),
+      ),
+      paint,
+    );
+    paint.color = const Color(0xFFFFE0C2);
+    canvas.drawCircle(Offset(cx - 32, cy - 18), 22, paint);
 
-    // Manos / vínculo (arco)
+    // Cuerpo derecho
+    paint.color = const Color(0xFFD4F5E9);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(center: Offset(cx + 34, cy + 16), width: 50, height: 68),
+        const Radius.circular(18),
+      ),
+      paint,
+    );
+    paint.color = const Color(0xFFFFD8B5);
+    canvas.drawCircle(Offset(cx + 34, cy - 20), 21, paint);
+
+    // Libros
+    paint.color = AppColors.violet;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(cx - 48, cy + 8, 18, 24),
+        const Radius.circular(4),
+      ),
+      paint,
+    );
+    paint.color = AppColors.accentWarm;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(cx + 22, cy + 6, 18, 24),
+        const Radius.circular(4),
+      ),
+      paint,
+    );
+
+    // Arco de conexión
     final arc = Paint()
-      ..color = AppColors.violetSoft
+      ..color = Colors.white.withValues(alpha: 0.7)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 6
+      ..strokeWidth = 4
       ..strokeCap = StrokeCap.round;
     canvas.drawArc(
-      Rect.fromCenter(center: Offset(cx, cy + 6), width: 70, height: 50),
-      math.pi * 0.15,
-      math.pi * 0.7,
+      Rect.fromCenter(center: Offset(cx, cy + 4), width: 56, height: 36),
+      math.pi * 0.2,
+      math.pi * 0.6,
       false,
       arc,
     );
-
-    // Medalla / acento
-    paint.color = const Color(0xFFFFC857);
-    canvas.drawCircle(Offset(cx, cy - 48), 14, paint);
-    paint.color = const Color(0xFFFFE6A3);
-    canvas.drawCircle(Offset(cx, cy - 48), 8, paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// Header + card flotante (patrón home de la referencia).
+class OverlapHeader extends StatelessWidget {
+  const OverlapHeader({
+    super.key,
+    required this.header,
+    required this.overlapChild,
+    this.headerHeight = 160,
+    this.overlapOffset = 52,
+  });
+
+  final Widget header;
+  final Widget overlapChild;
+  final double headerHeight;
+  final double overlapOffset;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: headerHeight + overlapOffset,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: headerHeight,
+            child: ClipPath(
+              clipper: WaveClipper(),
+              child: BlotchBackground(child: header),
+            ),
+          ),
+          Positioned(
+            left: 20,
+            right: 20,
+            top: headerHeight - overlapOffset,
+            child: overlapChild,
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -24,244 +24,218 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.bgSoft,
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: ContigoHeroHeader(
-              height: 200,
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            'ContiGO',
-                            style: GoogleFonts.fraunces(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.white,
-                            ),
-                          ),
-                          const Spacer(),
-                          Icon(Icons.notifications_none, color: AppColors.white.withValues(alpha: 0.9)),
-                        ],
-                      ),
-                      const Spacer(),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // Profile card overlapping header
-          SliverToBoxAdapter(
-            child: Transform.translate(
-              offset: const Offset(0, -48),
+      body: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          OverlapHeader(
+            headerHeight: 148,
+            overlapOffset: 56,
+            header: SafeArea(
+              bottom: false,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: SoftCard(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      PersonAvatar(
-                        name: user.name,
-                        initials: user.initials,
-                        size: 54,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Hola, $firstName 👋',
-                              style: GoogleFonts.dmSans(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 17,
-                              ),
-                            ),
-                            Text(
-                              user.career,
-                              style: GoogleFonts.dmSans(
-                                fontSize: 12,
-                                color: AppColors.grayDark,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                Container(
-                                  width: 8,
-                                  height: 8,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFF22C55E),
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  'Listo para conectar',
-                                  style: GoogleFonts.dmSans(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF16A34A),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Transform.translate(
-              offset: const Offset(0, -28),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+                child: Row(
                   children: [
                     Text(
-                      '¿Con qué idea quieres conectar hoy?',
+                      'ContiGO',
                       style: GoogleFonts.dmSans(
-                        fontSize: 15,
-                        color: AppColors.grayDark,
-                        height: 1.4,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.white,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SoftCard(
-                            padding: const EdgeInsets.all(14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Ideas',
-                                  style: GoogleFonts.dmSans(
-                                    fontSize: 12,
-                                    color: AppColors.grayDark,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '$ideaCount',
-                                  style: displayStyle(
-                                    size: 26,
-                                    color: AppColors.violetDeep,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: LinearProgressIndicator(
-                                    value: 0.72,
-                                    minHeight: 6,
-                                    backgroundColor: AppColors.violetSoft,
-                                    color: AppColors.violet,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: SoftCard(
-                            padding: const EdgeInsets.all(14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Matches',
-                                  style: GoogleFonts.dmSans(
-                                    fontSize: 12,
-                                    color: AppColors.grayDark,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '$matchCount',
-                                  style: displayStyle(
-                                    size: 26,
-                                    color: AppColors.violetDeep,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: LinearProgressIndicator(
-                                    value: matchCount / 5,
-                                    minHeight: 6,
-                                    backgroundColor: AppColors.violetSoft,
-                                    color: AppColors.violetMid,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                    const Spacer(),
+                    Icon(
+                      Icons.notifications_none_rounded,
+                      color: AppColors.white.withValues(alpha: 0.95),
                     ),
-                    const SizedBox(height: 24),
-                    Text('Proyectos para ti', style: displayStyle(size: 22)),
-                    const SizedBox(height: 12),
                   ],
                 ),
               ),
             ),
+            overlapChild: SoftCard(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(
+                children: [
+                  PersonAvatar(
+                    name: user.name,
+                    initials: user.initials,
+                    size: 50,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Hola, $firstName',
+                          style: GoogleFonts.dmSans(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          user.career,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 12,
+                            color: AppColors.grayDark,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Container(
+                              width: 7,
+                              height: 7,
+                              decoration: const BoxDecoration(
+                                color: AppColors.success,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Listo para conectar',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.success,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
-            sliver: SliverList.separated(
-              itemCount: projects.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 14),
-              itemBuilder: (context, index) {
-                final p = projects[index];
-                return ProjectCard(
-                  project: p,
-                  interested: repo.interestedProjectIds.contains(p.id),
-                  accentColor: index.isEven
-                      ? AppColors.violet
-                      : AppColors.violetMid,
-                  onTap: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            ProjectDetailScreen(repo: repo, project: p),
-                      ),
-                    );
-                    onChanged();
-                  },
-                  onInterest: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => ProjectDetailScreen(
-                          repo: repo,
-                          project: p,
-                          openInterest: true,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '¿Con qué idea quieres conectar hoy?',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 14,
+                    color: AppColors.grayDark,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SoftCard(
+                        padding: const EdgeInsets.all(14),
+                        child: _StatBlock(
+                          label: 'Ideas',
+                          value: '$ideaCount',
+                          progress: 0.7,
+                          color: AppColors.violet,
                         ),
                       ),
-                    );
-                    onChanged();
-                  },
-                );
-              },
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: SoftCard(
+                        padding: const EdgeInsets.all(14),
+                        child: _StatBlock(
+                          label: 'Matches',
+                          value: '$matchCount',
+                          progress: (matchCount / 5).clamp(0.15, 1),
+                          color: AppColors.accentPink,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 22),
+                Text('Proyectos para ti', style: displayStyle(size: 20)),
+                const SizedBox(height: 12),
+                for (var i = 0; i < projects.length; i++) ...[
+                  ProjectCard(
+                    project: projects[i],
+                    interested: repo.interestedProjectIds.contains(projects[i].id),
+                    accentColor:
+                        i.isEven ? AppColors.violet : AppColors.accentPink,
+                    onTap: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => ProjectDetailScreen(
+                            repo: repo,
+                            project: projects[i],
+                          ),
+                        ),
+                      );
+                      onChanged();
+                    },
+                    onInterest: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => ProjectDetailScreen(
+                            repo: repo,
+                            project: projects[i],
+                            openInterest: true,
+                          ),
+                        ),
+                      );
+                      onChanged();
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                ],
+                const SizedBox(height: 16),
+              ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _StatBlock extends StatelessWidget {
+  const _StatBlock({
+    required this.label,
+    required this.value,
+    required this.progress,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final double progress;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.grayDark),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: displayStyle(size: 24, color: AppColors.violetDeep),
+        ),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: progress,
+            minHeight: 5,
+            backgroundColor: AppColors.violetSoft,
+            color: color,
+          ),
+        ),
+      ],
     );
   }
 }

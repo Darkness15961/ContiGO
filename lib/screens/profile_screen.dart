@@ -21,148 +21,158 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final u = repo.currentUser;
+    final top = MediaQuery.sizeOf(context).height * 0.34;
 
     return Scaffold(
       backgroundColor: AppColors.bgSoft,
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 260,
-              child: BlotchBackground(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(36),
-                  bottomRight: Radius.circular(36),
-                ),
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 8),
-                      Text(
-                        'Perfil',
-                        style: GoogleFonts.fraunces(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.white,
-                        ),
+      body: Column(
+        children: [
+          SizedBox(
+            height: top,
+            child: BlotchBackground(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 8),
+                    Text(
+                      'Perfil',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.white,
                       ),
-                      const SizedBox(height: 16),
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: AppColors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: PersonAvatar(
-                          name: u.name,
-                          initials: u.initials,
-                          size: 88,
-                        ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.white, width: 3),
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        u.name,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.white,
-                        ),
+                      child: PersonAvatar(
+                        name: u.name,
+                        initials: u.initials,
+                        size: 84,
                       ),
-                      Text(
-                        u.career,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 13,
-                          color: AppColors.white.withValues(alpha: 0.85),
-                        ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      u.name,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.white,
                       ),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      u.career,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 13,
+                        color: AppColors.white.withValues(alpha: 0.88),
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+                  ],
                 ),
               ),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                SoftCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('¿Qué me mueve?', style: displayStyle(size: 20)),
-                      const SizedBox(height: 10),
-                      Text(
-                        '"${u.whatMovesYou}"',
-                        style: GoogleFonts.dmSans(
-                          fontSize: 14,
-                          height: 1.5,
-                          color: AppColors.violetDeep,
-                        ),
-                      ),
-                    ],
-                  ),
+          Expanded(
+            child: Transform.translate(
+              offset: const Offset(0, -22),
+              child: Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: AppColors.bgSoft,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
                 ),
-                const SizedBox(height: 14),
-                SoftCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SectionLabel('DATOS'),
-                      const SizedBox(height: 12),
-                      _InfoRow('Correo', u.email),
-                      _InfoRow('Disponibilidad', u.availability),
-                      _InfoRow('Modalidad', u.modality.label),
-                      _InfoRow('Pasiones', u.passions),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 14),
-                SoftCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SectionLabel('HABILIDADES'),
-                      const SizedBox(height: 8),
-                      TagWrap(tags: u.skills),
-                      const SizedBox(height: 16),
-                      const SectionLabel('INTERESES'),
-                      const SizedBox(height: 8),
-                      TagWrap(tags: u.interests),
-                      const SizedBox(height: 16),
-                      const SectionLabel('QUIERO APRENDER'),
-                      const SizedBox(height: 8),
-                      TagWrap(tags: u.wantsToLearn, filled: false),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 14),
-                SoftCard(
-                  onTap: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => CreateProfileScreen(repo: repo),
-                      ),
-                    );
-                    onChanged();
-                  },
-                  child: Row(
-                    children: [
-                      const Icon(Icons.edit_outlined, color: AppColors.violet),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'Editar perfil',
-                          style: GoogleFonts.dmSans(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 15,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+                  children: [
+                    SoftCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '¿Qué me mueve?',
+                            style: displayStyle(size: 17),
                           ),
-                        ),
+                          const SizedBox(height: 10),
+                          Text(
+                            u.whatMovesYou,
+                            maxLines: 6,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 13,
+                              height: 1.5,
+                              color: AppColors.grayDark,
+                            ),
+                          ),
+                        ],
                       ),
-                      const Icon(Icons.chevron_right, color: AppColors.grayDark),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 12),
+                    SoftCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Datos',
+                            style: displayStyle(size: 16),
+                          ),
+                          const SizedBox(height: 12),
+                          _DataLine('Correo', u.email),
+                          _DataLine('Disponibilidad', u.availability),
+                          _DataLine('Modalidad', u.modality.label),
+                          _DataLine('Pasiones', u.passions),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SoftCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Habilidades', style: displayStyle(size: 16)),
+                          const SizedBox(height: 8),
+                          TagWrap(tags: u.skills),
+                          const SizedBox(height: 14),
+                          Text('Intereses', style: displayStyle(size: 16)),
+                          const SizedBox(height: 8),
+                          TagWrap(tags: u.interests),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SoftCard(
+                      onTap: () async {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => CreateProfileScreen(repo: repo),
+                          ),
+                        );
+                        onChanged();
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            'Editar perfil',
+                            style: GoogleFonts.dmSans(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15,
+                            ),
+                          ),
+                          const Spacer(),
+                          const Icon(
+                            Icons.chevron_right,
+                            color: AppColors.grayDark,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ]),
+              ),
             ),
           ),
         ],
@@ -171,8 +181,8 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-class _InfoRow extends StatelessWidget {
-  const _InfoRow(this.label, this.value);
+class _DataLine extends StatelessWidget {
+  const _DataLine(this.label, this.value);
 
   final String label;
   final String value;
@@ -181,24 +191,24 @@ class _InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 110,
-            child: Text(
-              label,
-              style: GoogleFonts.dmSans(
-                fontSize: 13,
-                color: AppColors.grayDark,
-                fontWeight: FontWeight.w600,
-              ),
+          Text(
+            label,
+            style: GoogleFonts.dmSans(
+              fontSize: 12,
+              color: AppColors.grayDark,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          Expanded(
-            child: Text(
-              value,
-              style: GoogleFonts.dmSans(fontSize: 13, height: 1.35),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            style: GoogleFonts.dmSans(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.black,
             ),
           ),
         ],

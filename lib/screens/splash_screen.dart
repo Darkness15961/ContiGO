@@ -23,10 +23,13 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
+    _c = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
     _fade = CurvedAnimation(parent: _c, curve: Curves.easeOut);
     _c.forward();
-    _timer = Timer(const Duration(milliseconds: 1700), () {
+    _timer = Timer(const Duration(milliseconds: 1600), () {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
@@ -55,25 +58,25 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.handshake, color: AppColors.white, size: 48),
-                const SizedBox(height: 16),
+                const Icon(Icons.handshake, color: AppColors.white, size: 44),
+                const SizedBox(height: 14),
                 Text(
                   'ContiGO',
-                  style: GoogleFonts.fraunces(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w700,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 44,
+                    fontWeight: FontWeight.w800,
                     color: AppColors.white,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Text(
                     'Conecta ideas. Encuentra personas. Crea juntos.',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.dmSans(
-                      fontSize: 15,
-                      color: AppColors.white.withValues(alpha: 0.9),
+                      fontSize: 14,
+                      color: AppColors.white.withValues(alpha: 0.92),
                       height: 1.4,
                     ),
                   ),
