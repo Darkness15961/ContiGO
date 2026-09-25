@@ -28,30 +28,22 @@ class HomeScreen extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           OverlapHeader(
-            headerHeight: 148,
-            overlapOffset: 56,
-            header: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-                child: Row(
-                  children: [
-                    Text(
-                      'ContiGO',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.white,
-                      ),
-                    ),
-                    const Spacer(),
-                    Icon(
-                      Icons.notifications_none_rounded,
-                      color: AppColors.white.withValues(alpha: 0.95),
-                    ),
-                  ],
+            toolbar: Row(
+              children: [
+                Text(
+                  'ContiGO',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.white,
+                  ),
                 ),
-              ),
+                const Spacer(),
+                Icon(
+                  Icons.notifications_none_rounded,
+                  color: AppColors.white.withValues(alpha: 0.95),
+                ),
+              ],
             ),
             overlapChild: SoftCard(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -112,7 +104,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -158,7 +150,8 @@ class HomeScreen extends StatelessWidget {
                 for (var i = 0; i < projects.length; i++) ...[
                   ProjectCard(
                     project: projects[i],
-                    interested: repo.interestedProjectIds.contains(projects[i].id),
+                    interested:
+                        repo.interestedProjectIds.contains(projects[i].id),
                     accentColor:
                         i.isEven ? AppColors.violet : AppColors.accentPink,
                     onTap: () async {

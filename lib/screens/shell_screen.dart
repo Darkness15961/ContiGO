@@ -160,13 +160,20 @@ class _CreateNavButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: 42,
+                height: 42,
                 decoration: const BoxDecoration(
                   color: AppColors.violet,
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x406B4EFF),
+                      blurRadius: 8,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
-                child: const Icon(Icons.add, color: AppColors.white),
+                child: const Icon(Icons.add, color: AppColors.white, size: 22),
               ),
               const SizedBox(height: 2),
               Text(

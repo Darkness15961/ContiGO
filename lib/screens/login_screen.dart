@@ -57,9 +57,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: AppColors.white,
                         ),
                       ),
-                      const Spacer(),
-                      const ConnectionIllustration(size: 168),
-                      SizedBox(height: h * 0.04),
+                      const Expanded(
+                        child: Center(
+                          child: ConnectionIllustration(size: 150),
+                        ),
+                      ),
+                      const SizedBox(height: 28),
                     ],
                   ),
                 ),

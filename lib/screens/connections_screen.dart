@@ -36,27 +36,24 @@ class _ConnectionsScreenState extends State<ConnectionsScreen> {
         children: [
           ClipPath(
             clipper: WaveClipper(),
-            child: SizedBox(
-              height: 140,
-              child: BlotchBackground(
-                child: SafeArea(
-                  bottom: false,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.handshake, color: AppColors.white, size: 26),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Matches',
-                          style: GoogleFonts.dmSans(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.white,
-                          ),
+            child: BlotchBackground(
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 44),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.handshake, color: AppColors.white, size: 26),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Matches',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.white,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

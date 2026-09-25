@@ -21,19 +21,21 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final u = repo.currentUser;
-    final top = MediaQuery.sizeOf(context).height * 0.34;
+    final topInset = MediaQuery.paddingOf(context).top;
 
     return Scaffold(
       backgroundColor: AppColors.bgSoft,
-      body: Column(
+      body: ListView(
+        padding: EdgeInsets.zero,
         children: [
-          SizedBox(
-            height: top,
+          // Header completo sin Transform: nada tapa nombre/avatar
+          ClipPath(
+            clipper: WaveClipper(),
             child: BlotchBackground(
-              child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(20, topInset + 8, 20, 40),
                 child: Column(
                   children: [
-                    const SizedBox(height: 8),
                     Text(
                       'Perfil',
                       style: GoogleFonts.dmSans(
@@ -42,7 +44,7 @@ class ProfileScreen extends StatelessWidget {
                         color: AppColors.white,
                       ),
                     ),
-                    const Spacer(),
+                    const SizedBox(height: 18),
                     Container(
                       padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
@@ -55,124 +57,105 @@ class ProfileScreen extends StatelessWidget {
                         size: 84,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
                     Text(
                       u.name,
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.dmSans(
                         fontSize: 20,
                         fontWeight: FontWeight.w800,
                         color: AppColors.white,
                       ),
                     ),
+                    const SizedBox(height: 4),
                     Text(
                       u.career,
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.dmSans(
                         fontSize: 13,
-                        color: AppColors.white.withValues(alpha: 0.88),
+                        color: AppColors.white.withValues(alpha: 0.9),
                       ),
                     ),
-                    const SizedBox(height: 28),
                   ],
                 ),
               ),
             ),
           ),
-          Expanded(
-            child: Transform.translate(
-              offset: const Offset(0, -22),
-              child: Container(
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: AppColors.bgSoft,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+            child: Column(
+              children: [
+                SoftCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('¿Qué me mueve?', style: displayStyle(size: 17)),
+                      const SizedBox(height: 10),
+                      Text(
+                        u.whatMovesYou,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 13,
+                          height: 1.5,
+                          color: AppColors.grayDark,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
-                  children: [
-                    SoftCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '¿Qué me mueve?',
-                            style: displayStyle(size: 17),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            u.whatMovesYou,
-                            maxLines: 6,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.dmSans(
-                              fontSize: 13,
-                              height: 1.5,
-                              color: AppColors.grayDark,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SoftCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Datos',
-                            style: displayStyle(size: 16),
-                          ),
-                          const SizedBox(height: 12),
-                          _DataLine('Correo', u.email),
-                          _DataLine('Disponibilidad', u.availability),
-                          _DataLine('Modalidad', u.modality.label),
-                          _DataLine('Pasiones', u.passions),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SoftCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Habilidades', style: displayStyle(size: 16)),
-                          const SizedBox(height: 8),
-                          TagWrap(tags: u.skills),
-                          const SizedBox(height: 14),
-                          Text('Intereses', style: displayStyle(size: 16)),
-                          const SizedBox(height: 8),
-                          TagWrap(tags: u.interests),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SoftCard(
-                      onTap: () async {
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => CreateProfileScreen(repo: repo),
-                          ),
-                        );
-                        onChanged();
-                      },
-                      child: Row(
-                        children: [
-                          Text(
-                            'Editar perfil',
-                            style: GoogleFonts.dmSans(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
-                            ),
-                          ),
-                          const Spacer(),
-                          const Icon(
-                            Icons.chevron_right,
-                            color: AppColors.grayDark,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: 12),
+                SoftCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Datos', style: displayStyle(size: 16)),
+                      const SizedBox(height: 12),
+                      _DataLine('Correo', u.email),
+                      _DataLine('Disponibilidad', u.availability),
+                      _DataLine('Modalidad', u.modality.label),
+                      _DataLine('Pasiones', u.passions),
+                    ],
+                  ),
                 ),
-              ),
+                const SizedBox(height: 12),
+                SoftCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Habilidades', style: displayStyle(size: 16)),
+                      const SizedBox(height: 8),
+                      TagWrap(tags: u.skills),
+                      const SizedBox(height: 14),
+                      Text('Intereses', style: displayStyle(size: 16)),
+                      const SizedBox(height: 8),
+                      TagWrap(tags: u.interests),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SoftCard(
+                  onTap: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => CreateProfileScreen(repo: repo),
+                      ),
+                    );
+                    onChanged();
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        'Editar perfil',
+                        style: GoogleFonts.dmSans(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                        ),
+                      ),
+                      const Spacer(),
+                      const Icon(Icons.chevron_right, color: AppColors.grayDark),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],

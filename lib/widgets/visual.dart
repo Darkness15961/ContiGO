@@ -269,45 +269,47 @@ class _StudentsPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-/// Header + card flotante (patrón home de la referencia).
+/// Header violeta con toolbar arriba y card debajo (sin tapar título/iconos).
+/// La card vive dentro del bloque violeta, sobre la ola inferior.
 class OverlapHeader extends StatelessWidget {
   const OverlapHeader({
     super.key,
-    required this.header,
+    required this.toolbar,
     required this.overlapChild,
-    this.headerHeight = 160,
-    this.overlapOffset = 52,
+    this.bottomWaveSpace = 36,
   });
 
-  final Widget header;
+  final Widget toolbar;
   final Widget overlapChild;
-  final double headerHeight;
-  final double overlapOffset;
+  final double bottomWaveSpace;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: headerHeight + overlapOffset,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: headerHeight,
-            child: ClipPath(
-              clipper: WaveClipper(),
-              child: BlotchBackground(child: header),
-            ),
+    final topInset = MediaQuery.paddingOf(context).top;
+
+    return ClipPath(
+      clipper: WaveClipper(),
+      child: BlotchBackground(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0, topInset, 0, bottomWaveSpace),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 48,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: toolbar,
+                ),
+              ),
+              const SizedBox(height: 14),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: overlapChild,
+              ),
+            ],
           ),
-          Positioned(
-            left: 20,
-            right: 20,
-            top: headerHeight - overlapOffset,
-            child: overlapChild,
-          ),
-        ],
+        ),
       ),
     );
   }
