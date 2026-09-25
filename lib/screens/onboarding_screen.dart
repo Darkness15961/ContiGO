@@ -2,118 +2,130 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../theme/app_theme.dart';
+import 'login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key, required this.onContinue});
-
-  final VoidCallback onContinue;
+  const OnboardingScreen({super.key});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _fade;
-  late final Animation<Offset> _slide;
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final _page = PageController();
+  int _index = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    );
-    _fade = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-    _slide = Tween<Offset>(
-      begin: const Offset(0, 0.06),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
-    _controller.forward();
-  }
+  static const _slides = [
+    (
+      '01',
+      'Ten una idea',
+      'Convierte aquello que tienes en mente en un proyecto.',
+    ),
+    (
+      '02',
+      'Encuentra personas',
+      'Descubre estudiantes que conecten con tu idea.',
+    ),
+    (
+      '03',
+      'Construyan juntos',
+      'Las habilidades pueden aprenderse. La conexión es el comienzo.',
+    ),
+  ];
 
   @override
   void dispose() {
-    _controller.dispose();
+    _page.dispose();
     super.dispose();
+  }
+
+  void _next() {
+    if (_index < _slides.length - 1) {
+      _page.nextPage(
+        duration: const Duration(milliseconds: 320),
+        curve: Curves.easeOutCubic,
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFE8F3F1),
-              AppColors.mist,
-              Color(0xFFF6EFE8),
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: FadeTransition(
-            opacity: _fade,
-            child: SlideTransition(
-              position: _slide,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(28, 36, 28, 28),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'ContiGO',
-                      style: displayStyle(size: 44, weight: FontWeight.w700),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Primero conecta. Luego construye.',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 18,
-                        color: AppColors.inkSoft,
-                        height: 1.35,
+      backgroundColor: AppColors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(28, 24, 28, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('ContiGO', style: brandStyle(size: 28)),
+              Expanded(
+                child: PageView.builder(
+                  controller: _page,
+                  itemCount: _slides.length,
+                  onPageChanged: (i) => setState(() => _index = i),
+                  itemBuilder: (_, i) {
+                    final s = _slides[i];
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 48),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            s.$1,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.violet,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(s.$2, style: displayStyle(size: 34)),
+                          const SizedBox(height: 14),
+                          Text(
+                            s.$3,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 17,
+                              height: 1.5,
+                              color: AppColors.grayDark,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      'No buscamos personas perfectas.',
-                      style: displayStyle(size: 28),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Buscamos personas que quieran construir juntas.\n\nLo demás se aprende.',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 16,
-                        height: 1.5,
-                        color: AppColors.inkSoft,
-                      ),
-                    ),
-                    const SizedBox(height: 36),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: widget.onContinue,
-                        child: const Text('Empezar a conectar'),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Center(
-                      child: Text(
-                        'Simulación · datos mock · Android',
-                        style: GoogleFonts.dmSans(
-                          fontSize: 12,
-                          color: AppColors.muted,
-                        ),
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
-            ),
+              Row(
+                children: [
+                  for (var i = 0; i < _slides.length; i++)
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      margin: const EdgeInsets.only(right: 6),
+                      width: i == _index ? 22 : 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: i == _index
+                            ? AppColors.violet
+                            : AppColors.grayLight,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _next,
+                  child: Text(_index == _slides.length - 1 ? 'Comenzar' : 'Siguiente'),
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -1,64 +1,76 @@
+enum Modality { presencial, virtual, hibrida }
+
+extension ModalityX on Modality {
+  String get label => switch (this) {
+        Modality.presencial => 'Presencial',
+        Modality.virtual => 'Virtual',
+        Modality.hibrida => 'Híbrida',
+      };
+}
+
 class Student {
   const Student({
     required this.id,
     required this.name,
     required this.career,
-    required this.year,
+    required this.email,
     required this.whatMovesYou,
+    required this.description,
+    required this.passions,
+    required this.skills,
     required this.interests,
-    required this.canTeach,
     required this.wantsToLearn,
-    required this.workStyle,
     required this.availability,
-    this.avatarInitials,
+    required this.modality,
   });
 
   final String id;
   final String name;
   final String career;
-  final int year;
+  final String email;
   final String whatMovesYou;
+  final String description;
+  final String passions;
+  final List<String> skills;
   final List<String> interests;
-  final List<String> canTeach;
   final List<String> wantsToLearn;
-  final String workStyle;
   final String availability;
-  final String? avatarInitials;
+  final Modality modality;
 
-  String get initials =>
-      avatarInitials ??
-      name
-          .split(' ')
-          .where((p) => p.isNotEmpty)
-          .take(2)
-          .map((p) => p[0].toUpperCase())
-          .join();
+  String get initials => name
+      .split(' ')
+      .where((p) => p.isNotEmpty)
+      .take(2)
+      .map((p) => p[0].toUpperCase())
+      .join();
 }
 
 class ProjectIdea {
   const ProjectIdea({
     required this.id,
     required this.author,
+    required this.codeName,
     required this.title,
+    required this.about,
     required this.why,
-    required this.lookingFor,
-    required this.themeTags,
-    required this.motivationTags,
-    this.skillsNiceToHave = const [],
-    this.canTeach = const [],
-    this.wantsToLearn = const [],
+    required this.motivation,
+    required this.lookingForPeople,
+    required this.categories,
+    required this.knowledgeAreas,
+    required this.modality,
   });
 
   final String id;
   final Student author;
+  final String codeName;
   final String title;
+  final String about;
   final String why;
-  final String lookingFor;
-  final List<String> themeTags;
-  final List<String> motivationTags;
-  final List<String> skillsNiceToHave;
-  final List<String> canTeach;
-  final List<String> wantsToLearn;
+  final String motivation;
+  final String lookingForPeople;
+  final List<String> categories;
+  final List<String> knowledgeAreas;
+  final Modality modality;
 }
 
 enum ConnectionReason {
@@ -74,30 +86,56 @@ enum ConnectionReason {
   final String label;
 }
 
-class AffinityMatch {
-  const AffinityMatch({
+enum ConnectionBucket { nuevas, enConversacion, equipos }
+
+extension ConnectionBucketX on ConnectionBucket {
+  String get label => switch (this) {
+        ConnectionBucket.nuevas => 'Nuevas',
+        ConnectionBucket.enConversacion => 'En conversación',
+        ConnectionBucket.equipos => 'Equipos',
+      };
+}
+
+class TeamConnection {
+  const TeamConnection({
     required this.id,
-    required this.idea,
-    required this.other,
-    required this.reasons,
-    required this.status,
-    this.note,
+    required this.project,
+    required this.members,
+    required this.bucket,
+    this.lastMessage,
   });
 
   final String id;
-  final ProjectIdea idea;
-  final Student other;
-  final List<ConnectionReason> reasons;
-  final MatchStatus status;
-  final String? note;
+  final ProjectIdea project;
+  final List<Student> members;
+  final ConnectionBucket bucket;
+  final String? lastMessage;
 }
 
-enum MatchStatus {
-  pending('Esperando respuesta'),
-  mutual('Match — listos para conversar'),
-  chatting('En conversación'),
-  meeting('Reunión agendada');
+class ChatMessage {
+  const ChatMessage({
+    required this.fromId,
+    required this.text,
+    required this.at,
+  });
 
-  const MatchStatus(this.label);
-  final String label;
+  final String fromId;
+  final String text;
+  final DateTime at;
+}
+
+class MeetingProposal {
+  const MeetingProposal({
+    required this.modality,
+    required this.dateLabel,
+    required this.timeLabel,
+    required this.placeOrLink,
+    required this.message,
+  });
+
+  final Modality modality;
+  final String dateLabel;
+  final String timeLabel;
+  final String placeOrLink;
+  final String message;
 }

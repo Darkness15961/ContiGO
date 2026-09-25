@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// ContiGO visual identity: human connection, not admin purple.
+/// ContiGO — violeta Continental como identidad de conexión.
+/// 70% blanco/claros · 20% violeta · 10% negro/contraste
 class AppColors {
-  static const ink = Color(0xFF14221E);
-  static const inkSoft = Color(0xFF3A4A45);
-  static const mist = Color(0xFFF2F5F3);
-  static const paper = Color(0xFFFAFBFA);
-  static const teal = Color(0xFF0B6E6A);
-  static const tealSoft = Color(0xFFD8EFED);
-  static const ember = Color(0xFFC45C26);
-  static const emberSoft = Color(0xFFF8E6DC);
-  static const line = Color(0xFFD9E0DC);
-  static const success = Color(0xFF1F7A4D);
-  static const muted = Color(0xFF6B7A74);
+  static const violet = Color(0xFF6C2BD9);
+  static const violetDeep = Color(0xFF4B1FA6);
+  static const violetSoft = Color(0xFFF1EBFF);
+  static const white = Color(0xFFFFFFFF);
+  static const black = Color(0xFF171717);
+  static const grayDark = Color(0xFF555555);
+  static const grayLight = Color(0xFFE8E8E8);
+  static const bgSoft = Color(0xFFF8F7FA);
 }
 
 class AppTheme {
@@ -21,78 +19,121 @@ class AppTheme {
     final base = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      scaffoldBackgroundColor: AppColors.mist,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.teal,
-        primary: AppColors.teal,
-        secondary: AppColors.ember,
-        surface: AppColors.paper,
-        brightness: Brightness.light,
+      scaffoldBackgroundColor: AppColors.white,
+      colorScheme: const ColorScheme.light(
+        primary: AppColors.violet,
+        onPrimary: AppColors.white,
+        secondary: AppColors.violetDeep,
+        onSecondary: AppColors.white,
+        surface: AppColors.white,
+        onSurface: AppColors.black,
+        outline: AppColors.grayLight,
       ),
     );
 
     return base.copyWith(
       textTheme: GoogleFonts.dmSansTextTheme(base.textTheme).apply(
-        bodyColor: AppColors.ink,
-        displayColor: AppColors.ink,
+        bodyColor: AppColors.black,
+        displayColor: AppColors.black,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.mist,
-        foregroundColor: AppColors.ink,
+        backgroundColor: AppColors.white,
+        foregroundColor: AppColors.black,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
         titleTextStyle: GoogleFonts.fraunces(
           fontSize: 24,
           fontWeight: FontWeight.w600,
-          color: AppColors.ink,
+          color: AppColors.black,
         ),
-      ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.paper,
-        selectedItemColor: AppColors.teal,
-        unselectedItemColor: AppColors.muted,
-        type: BottomNavigationBarType.fixed,
-        elevation: 0,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.teal,
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.violet,
+          foregroundColor: AppColors.white,
+          disabledBackgroundColor: AppColors.violetSoft,
+          disabledForegroundColor: AppColors.grayDark,
           elevation: 0,
+          minimumSize: const Size.fromHeight(52),
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w600, fontSize: 15),
+          textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 15),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.ink,
-          side: const BorderSide(color: AppColors.line),
+          foregroundColor: AppColors.black,
+          side: const BorderSide(color: AppColors.grayLight),
+          minimumSize: const Size.fromHeight(52),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w600, fontSize: 15),
         ),
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.violet,
+          textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 14),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.bgSoft,
+        hintStyle: GoogleFonts.dmSans(color: AppColors.grayDark),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.grayLight),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.violet, width: 1.5),
+        ),
+      ),
       chipTheme: ChipThemeData(
-        backgroundColor: AppColors.tealSoft,
-        selectedColor: AppColors.teal,
-        labelStyle: GoogleFonts.dmSans(fontSize: 13, color: AppColors.ink),
-        secondaryLabelStyle: GoogleFonts.dmSans(fontSize: 13, color: Colors.white),
+        backgroundColor: AppColors.violetSoft,
+        selectedColor: AppColors.violet,
+        labelStyle: GoogleFonts.dmSans(fontSize: 13, color: AppColors.violetDeep),
+        secondaryLabelStyle: GoogleFonts.dmSans(fontSize: 13, color: AppColors.white),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         side: BorderSide.none,
       ),
-      dividerTheme: const DividerThemeData(color: AppColors.line, thickness: 1),
+      dividerTheme: const DividerThemeData(color: AppColors.grayLight, thickness: 1),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: AppColors.white,
+        selectedItemColor: AppColors.violet,
+        unselectedItemColor: AppColors.grayDark,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+      ),
     );
   }
 }
 
-TextStyle displayStyle({double size = 32, FontWeight weight = FontWeight.w600, Color? color}) {
+TextStyle displayStyle({
+  double size = 32,
+  FontWeight weight = FontWeight.w600,
+  Color? color,
+}) {
   return GoogleFonts.fraunces(
     fontSize: size,
     fontWeight: weight,
-    color: color ?? AppColors.ink,
+    color: color ?? AppColors.black,
     height: 1.15,
+  );
+}
+
+TextStyle brandStyle({double size = 36}) {
+  return GoogleFonts.fraunces(
+    fontSize: size,
+    fontWeight: FontWeight.w700,
+    color: AppColors.violetDeep,
+    letterSpacing: -0.5,
   );
 }

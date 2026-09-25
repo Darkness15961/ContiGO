@@ -2,138 +2,106 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../data/mock_repository.dart';
+import '../models/models.dart';
 import '../theme/app_theme.dart';
-import '../widgets/person_avatar.dart';
-import '../widgets/tag_wrap.dart';
+import '../widgets/common.dart';
+import 'create_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key, required this.repo});
+  const ProfileScreen({
+    super.key,
+    required this.repo,
+    required this.onChanged,
+  });
 
   final MockRepository repo;
+  final VoidCallback onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final user = repo.currentUser;
+    final u = repo.currentUser;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Perfil', style: displayStyle(size: 26)),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
-        children: [
-          Row(
-            children: [
-              PersonAvatar(
-                name: user.name,
-                initials: user.initials,
-                size: 64,
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user.name,
-                      style: GoogleFonts.dmSans(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      '${user.career} · ${user.year}',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 13,
-                        color: AppColors.muted,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 28),
-          Text('¿Qué te mueve?', style: displayStyle(size: 24)),
-          const SizedBox(height: 10),
-          Text(
-            user.whatMovesYou,
-            style: GoogleFonts.dmSans(
-              fontSize: 15,
-              height: 1.55,
-              color: AppColors.inkSoft,
-            ),
-          ),
-          const SizedBox(height: 24),
-          const SectionLabel('INTERESES'),
-          const SizedBox(height: 8),
-          TagWrap(tags: user.interests),
-          const SizedBox(height: 20),
-          const SectionLabel('FORMA DE TRABAJAR'),
-          const SizedBox(height: 8),
-          Text(
-            user.workStyle,
-            style: GoogleFonts.dmSans(fontSize: 15),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            user.availability,
-            style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.muted),
-          ),
-          const SizedBox(height: 24),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SectionLabel('PUEDO ENSEÑAR'),
-                    const SizedBox(height: 8),
-                    TagWrap(tags: user.canTeach),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SectionLabel('QUIERO APRENDER'),
-                    const SizedBox(height: 8),
-                    TagWrap(tags: user.wantsToLearn, ember: true),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 28),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFE8F3F1), Color(0xFFF6EFE8)],
-              ),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('ContiGO', style: displayStyle(size: 20)),
-                const SizedBox(height: 6),
-                Text(
-                  'No buscamos personas perfectas.\nBuscamos personas que quieran construir juntas.\n\nLo demás se aprende.',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 14,
-                    height: 1.45,
-                    color: AppColors.inkSoft,
+      backgroundColor: AppColors.white,
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  PersonAvatar(name: u.name, initials: u.initials, size: 88),
+                  const SizedBox(height: 12),
+                  Text(
+                    u.name,
+                    style: displayStyle(size: 26),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    u.career,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 14,
+                      color: AppColors.grayDark,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 24),
+            const Divider(),
+            const SizedBox(height: 16),
+            Text('¿Qué me mueve?', style: displayStyle(size: 22)),
+            const SizedBox(height: 10),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.violetSoft,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Text(
+                '"${u.whatMovesYou}"',
+                style: GoogleFonts.dmSans(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: AppColors.violetDeep,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Divider(),
+            const SizedBox(height: 16),
+            const SectionLabel('HABILIDADES'),
+            const SizedBox(height: 8),
+            TagWrap(tags: u.skills),
+            const SizedBox(height: 16),
+            const SectionLabel('INTERESES'),
+            const SizedBox(height: 8),
+            TagWrap(tags: u.interests),
+            const SizedBox(height: 16),
+            const SectionLabel('QUIERO APRENDER'),
+            const SizedBox(height: 8),
+            TagWrap(tags: u.wantsToLearn, filled: false),
+            const SizedBox(height: 16),
+            Text(
+              '${u.availability} · ${u.modality.label}',
+              style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.grayDark),
+            ),
+            const SizedBox(height: 28),
+            OutlinedButton(
+              onPressed: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => CreateProfileScreen(repo: repo),
+                  ),
+                );
+                onChanged();
+              },
+              child: const Text('Editar perfil'),
+            ),
+          ],
+        ),
       ),
     );
   }

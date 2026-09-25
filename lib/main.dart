@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'data/mock_repository.dart';
-import 'screens/onboarding_screen.dart';
-import 'screens/shell_screen.dart';
+import 'screens/splash_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
@@ -18,16 +15,8 @@ void main() {
   runApp(const ContigoApp());
 }
 
-class ContigoApp extends StatefulWidget {
+class ContigoApp extends StatelessWidget {
   const ContigoApp({super.key});
-
-  @override
-  State<ContigoApp> createState() => _ContigoAppState();
-}
-
-class _ContigoAppState extends State<ContigoApp> {
-  final MockRepository repo = MockRepository();
-  bool _seenOnboarding = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,17 +24,7 @@ class _ContigoAppState extends State<ContigoApp> {
       title: 'ContiGO',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      home: _seenOnboarding
-          ? ShellScreen(repo: repo)
-          : OnboardingScreen(
-              onContinue: () => setState(() => _seenOnboarding = true),
-            ),
-      builder: (context, child) {
-        return DefaultTextStyle(
-          style: GoogleFonts.dmSans(color: AppColors.ink),
-          child: child ?? const SizedBox.shrink(),
-        );
-      },
+      home: const SplashScreen(),
     );
   }
 }

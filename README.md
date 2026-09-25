@@ -169,6 +169,34 @@ Las skills entran como contexto secundario (enseñar / aprender), no como filtro
 
 ---
 
+## Identidad visual
+
+Violeta = conexión · Blanco = descubrimiento · Negro = contenido
+
+| Color | Hex | Uso |
+|-------|-----|-----|
+| Violeta ContiGO | `#6C2BD9` | Botones, acciones |
+| Violeta profundo | `#4B1FA6` | Activos, match, títulos |
+| Violeta suave | `#F1EBFF` | Tarjetas, etiquetas |
+| Blanco | `#FFFFFF` | Fondo principal |
+| Negro | `#171717` | Texto |
+| Gris oscuro | `#555555` | Texto secundario |
+| Gris claro | `#E8E8E8` | Bordes |
+| Fondo suave | `#F8F7FA` | Fondos alternativos |
+
+Distribución aproximada: **70%** claros · **20%** violeta · **10%** negro.  
+El violeta se intensifica en: *Me interesa → Match → Conexión → Reunión*.
+
+---
+
+## MVP (15 vistas)
+
+Splash · Onboarding · Login · Registro · Crear perfil · Inicio · Explorar · Detalle proyecto · Crear proyecto · Solicitud de interés · Match · Conexiones · Conversación · Proponer reunión · Mi perfil
+
+Navegación: **Inicio · Explorar · ＋ Crear · Conexiones · Perfil**
+
+---
+
 ## Ángulo de investigación
 
 Más interesante que “una app de matching por skills”:
