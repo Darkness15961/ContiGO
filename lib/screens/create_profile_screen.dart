@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../data/mock_repository.dart';
 import '../models/models.dart';
@@ -22,6 +23,8 @@ class CreateProfileScreen extends StatefulWidget {
 }
 
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
+  late final TextEditingController _name;
+  late final TextEditingController _career;
   late final TextEditingController _desc;
   late final TextEditingController _passions;
   late final TextEditingController _skills;
@@ -30,11 +33,16 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   late final TextEditingController _availability;
   late final TextEditingController _moves;
   late Modality _modality;
+  String? _localPhotoPath;
+  String? _photoUrl;
+  final _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
     final u = widget.repo.currentUser;
+    _name = TextEditingController(text: u.name);
+    _career = TextEditingController(text: u.career);
     _desc = TextEditingController(text: u.description);
     _passions = TextEditingController(text: u.passions);
     _skills = TextEditingController(text: u.skills.join(' · '));
@@ -43,10 +51,14 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     _availability = TextEditingController(text: u.availability);
     _moves = TextEditingController(text: u.whatMovesYou);
     _modality = u.modality;
+    _localPhotoPath = u.localPhotoPath;
+    _photoUrl = u.photoUrl;
   }
 
   @override
   void dispose() {
+    _name.dispose();
+    _career.dispose();
     _desc.dispose();
     _passions.dispose();
     _skills.dispose();
@@ -63,14 +75,30 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
       .where((e) => e.isNotEmpty)
       .toList();
 
+  Future<void> _pickPhoto() async {
+    final choice = await PhotoPickerSheet.show(context);
+    if (choice == null) return;
+
+    final source = choice == ImageSourceChoice.camera
+        ? ImageSource.camera
+        : ImageSource.gallery;
+
+    final file = await _picker.pickImage(
+      source: source,
+      maxWidth: 1200,
+      maxHeight: 1200,
+      imageQuality: 85,
+    );
+    if (file == null) return;
+    setState(() => _localPhotoPath = file.path);
+  }
+
   void _save() {
     final u = widget.repo.currentUser;
     widget.repo.updateProfile(
-      Student(
-        id: u.id,
-        name: u.name,
-        career: u.career,
-        email: u.email,
+      u.copyWith(
+        name: _name.text.trim().isEmpty ? u.name : _name.text.trim(),
+        career: _career.text.trim().isEmpty ? u.career : _career.text.trim(),
         description: _desc.text.trim(),
         passions: _passions.text.trim(),
         whatMovesYou: _moves.text.trim(),
@@ -79,6 +107,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
         wantsToLearn: _split(_learn.text),
         availability: _availability.text.trim(),
         modality: _modality,
+        photoUrl: _photoUrl,
+        localPhotoPath: _localPhotoPath,
       ),
     );
     if (widget.isFirstTime) {
@@ -93,6 +123,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.mist,
       appBar: AppBar(
         title: Text(
           widget.isFirstTime ? 'Crear mi perfil' : 'Editar perfil',
@@ -105,15 +136,65 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
           Center(
             child: Column(
               children: [
-                PersonAvatar(
-                  name: widget.repo.currentUser.name,
-                  initials: widget.repo.currentUser.initials,
-                  size: 84,
+                GestureDetector(
+                  onTap: _pickPhoto,
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      PersonAvatar(
+                        name: _name.text,
+                        initials: _name.text.isEmpty
+                            ? '?'
+                            : _name.text
+                                .trim()
+                                .split(' ')
+                                .where((e) => e.isNotEmpty)
+                                .take(2)
+                                .map((e) => e[0].toUpperCase())
+                                .join(),
+                        size: 108,
+                        photoUrl: _photoUrl,
+                        localPhotoPath: _localPhotoPath,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: AppColors.white,
+                          size: 18,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 8),
-                TextButton(onPressed: () {}, child: const Text('Agregar foto')),
+                TextButton(
+                  onPressed: _pickPhoto,
+                  child: const Text('Subir foto de perfil'),
+                ),
+                Text(
+                  'Galería o cámara — elige la imagen que quieras',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    color: AppColors.grayDark,
+                  ),
+                ),
               ],
             ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _name,
+            decoration: const InputDecoration(hintText: 'Nombre'),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _career,
+            decoration: const InputDecoration(hintText: 'Carrera'),
           ),
           const SizedBox(height: 12),
           TextField(
@@ -129,22 +210,27 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
           const SizedBox(height: 12),
           TextField(
             controller: _skills,
-            decoration: const InputDecoration(hintText: '¿Qué habilidades tienes?'),
+            decoration:
+                const InputDecoration(hintText: '¿Qué habilidades tienes?'),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _interests,
-            decoration: const InputDecoration(hintText: '¿Qué temas te interesan?'),
+            decoration:
+                const InputDecoration(hintText: '¿Qué temas te interesan?'),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _learn,
-            decoration: const InputDecoration(hintText: '¿Qué quieres aprender?'),
+            decoration:
+                const InputDecoration(hintText: '¿Qué quieres aprender?'),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _availability,
-            decoration: const InputDecoration(hintText: '¿Cuándo tienes disponibilidad?'),
+            decoration: const InputDecoration(
+              hintText: '¿Cuándo tienes disponibilidad?',
+            ),
           ),
           const SizedBox(height: 16),
           const SectionLabel('MODALIDAD'),
@@ -155,7 +241,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
               groupValue: _modality,
               onChanged: (v) => setState(() => _modality = v!),
               title: Text(m.label),
-              activeColor: AppColors.violet,
+              activeColor: AppColors.primary,
               contentPadding: EdgeInsets.zero,
             ),
           ),
@@ -172,13 +258,15 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             maxLines: 6,
             decoration: const InputDecoration(
               hintText: 'Escribe libremente…',
-              fillColor: AppColors.violetSoft,
+              fillColor: AppColors.cream,
             ),
           ),
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: _save,
-            child: Text(widget.isFirstTime ? 'Guardar y continuar' : 'Guardar cambios'),
+            child: Text(
+              widget.isFirstTime ? 'Guardar y continuar' : 'Guardar cambios',
+            ),
           ),
         ],
       ),

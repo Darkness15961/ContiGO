@@ -28,30 +28,36 @@ class ProjectCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SoftCard(
       onTap: onTap,
-      accentBar: accentColor ?? AppColors.violet,
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+      accentBar: accentColor ?? AppColors.primary,
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          ProjectCover(project: project, height: 120, borderRadius: 14),
+          const SizedBox(height: 12),
           Row(
             children: [
-              Text(
-                project.codeName,
-                style: GoogleFonts.dmSans(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 13,
-                  color: AppColors.violet,
-                  letterSpacing: 0.5,
+              PersonAvatar.fromStudent(project.author, size: 28),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  project.author.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.grayDark,
+                  ),
                 ),
               ),
-              const Spacer(),
               if (interested)
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.violetSoft,
+                    color: AppColors.cream,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -59,13 +65,23 @@ class ProjectCard extends StatelessWidget {
                     style: GoogleFonts.dmSans(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.violet,
+                      color: AppColors.primary,
                     ),
                   ),
                 ),
             ],
           ),
           const SizedBox(height: 8),
+          Text(
+            project.codeName,
+            style: GoogleFonts.dmSans(
+              fontWeight: FontWeight.w800,
+              fontSize: 12,
+              color: AppColors.primary,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 4),
           Text(
             project.title,
             maxLines: 2,

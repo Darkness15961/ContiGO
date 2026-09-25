@@ -45,10 +45,10 @@ class MatchScreen extends StatelessWidget {
                 style: displayStyle(size: 32, color: AppColors.white),
               ),
               const SizedBox(height: 28),
-              Row(
+                  Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _MatchPerson(name: me.name, initials: me.initials),
+                  _MatchPerson(student: me),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     child: Text(
@@ -59,7 +59,7 @@ class MatchScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  _MatchPerson(name: other.name, initials: other.initials),
+                  _MatchPerson(student: other),
                 ],
               ),
               const SizedBox(height: 28),
@@ -133,19 +133,18 @@ class MatchScreen extends StatelessWidget {
 }
 
 class _MatchPerson extends StatelessWidget {
-  const _MatchPerson({required this.name, required this.initials});
+  const _MatchPerson({required this.student});
 
-  final String name;
-  final String initials;
+  final Student student;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        PersonAvatar(name: name, initials: initials, size: 64),
+        PersonAvatar.fromStudent(student, size: 64),
         const SizedBox(height: 8),
         Text(
-          name.split(' ').first,
+          student.name.split(' ').first,
           style: GoogleFonts.dmSans(
             color: AppColors.white,
             fontWeight: FontWeight.w700,

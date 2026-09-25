@@ -49,11 +49,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               child: Row(
                 children: [
-                  PersonAvatar(
-                    name: user.name,
-                    initials: user.initials,
-                    size: 50,
-                  ),
+                  PersonAvatar.fromStudent(user, size: 50),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(

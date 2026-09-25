@@ -38,6 +38,7 @@ class MockRepository {
       wantsToLearn: ['Diseño', 'UX research', 'Emprendimiento'],
       availability: 'Fines de semana y noches entre semana',
       modality: Modality.hibrida,
+      photoUrl: 'https://i.pravatar.cc/300?u=eduardo',
     );
 
     const ana = Student(
@@ -54,6 +55,7 @@ class MockRepository {
       wantsToLearn: ['Desarrollo móvil', 'Animación'],
       availability: 'Tardes entre semana',
       modality: Modality.hibrida,
+      photoUrl: 'https://i.pravatar.cc/300?u=ana',
     );
 
     const luis = Student(
@@ -70,6 +72,7 @@ class MockRepository {
       wantsToLearn: ['Frontend', 'Investigación'],
       availability: 'Mañanas flexibles',
       modality: Modality.virtual,
+      photoUrl: 'https://i.pravatar.cc/300?u=luis',
     );
 
     const diego = Student(
@@ -86,6 +89,7 @@ class MockRepository {
       wantsToLearn: ['Apps móviles', 'Comunicación'],
       availability: 'Noches',
       modality: Modality.presencial,
+      photoUrl: 'https://i.pravatar.cc/300?u=diego',
     );
 
     const maria = Student(
@@ -102,6 +106,7 @@ class MockRepository {
       wantsToLearn: ['Producto digital'],
       availability: 'Fines de semana',
       modality: Modality.virtual,
+      photoUrl: 'https://i.pravatar.cc/300?u=maria',
     );
 
     projects = [
@@ -121,6 +126,8 @@ class MockRepository {
         categories: ['Educación', 'Social'],
         knowledgeAreas: ['Educación', 'Electrónica', 'Diseño'],
         modality: Modality.hibrida,
+        coverUrl:
+            'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80',
       ),
       ProjectIdea(
         id: 'contigo-meta',
@@ -138,6 +145,8 @@ class MockRepository {
         categories: ['Tecnología', 'Emprendimiento'],
         knowledgeAreas: ['Producto', 'UX', 'Backend'],
         modality: Modality.hibrida,
+        coverUrl:
+            'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80',
       ),
       ProjectIdea(
         id: 'huertos',
@@ -154,6 +163,8 @@ class MockRepository {
         categories: ['Ambiente', 'Social'],
         knowledgeAreas: ['Mapas', 'Móvil', 'Comunicación'],
         modality: Modality.presencial,
+        coverUrl:
+            'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80',
       ),
       ProjectIdea(
         id: 'habit',
@@ -169,6 +180,8 @@ class MockRepository {
         categories: ['Educación', 'Social'],
         knowledgeAreas: ['Facilitación', 'UI simple'],
         modality: Modality.virtual,
+        coverUrl:
+            'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80',
       ),
       ProjectIdea(
         id: 'portfolio',
@@ -184,6 +197,8 @@ class MockRepository {
         categories: ['Tecnología', 'Emprendimiento'],
         knowledgeAreas: ['Copy', 'Web', 'Motion'],
         modality: Modality.virtual,
+        coverUrl:
+            'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80',
       ),
     ];
 

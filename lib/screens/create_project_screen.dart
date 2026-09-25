@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../data/mock_repository.dart';
 import '../models/models.dart';
@@ -24,6 +27,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   final _looking = TextEditingController();
   final _knowledge = TextEditingController();
   Modality _modality = Modality.hibrida;
+  String? _coverPath;
+  final _picker = ImagePicker();
 
   @override
   void dispose() {
@@ -35,6 +40,21 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     _looking.dispose();
     _knowledge.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickCover() async {
+    final choice = await PhotoPickerSheet.show(context);
+    if (choice == null) return;
+    final source = choice == ImageSourceChoice.camera
+        ? ImageSource.camera
+        : ImageSource.gallery;
+    final file = await _picker.pickImage(
+      source: source,
+      maxWidth: 1600,
+      imageQuality: 85,
+    );
+    if (file == null) return;
+    setState(() => _coverPath = file.path);
   }
 
   void _publish() {
@@ -51,9 +71,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         codeName: _code.text.trim().isEmpty
             ? 'IDEA'
             : _code.text.trim().toUpperCase(),
-        title: _title.text.trim().isEmpty
-            ? 'Nueva idea'
-            : _title.text.trim(),
+        title: _title.text.trim().isEmpty ? 'Nueva idea' : _title.text.trim(),
         about: _about.text.trim(),
         why: _why.text.trim(),
         motivation: _motivation.text.trim(),
@@ -61,13 +79,14 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         categories: const ['Tecnología'],
         knowledgeAreas: knowledge,
         modality: _modality,
+        localCoverPath: _coverPath,
       ),
     );
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Tu idea fue publicada', style: GoogleFonts.dmSans()),
-        backgroundColor: AppColors.violet,
+        backgroundColor: AppColors.primary,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -77,7 +96,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.mist,
       appBar: AppBar(
         title: Text('Crear proyecto', style: displayStyle(size: 22)),
       ),
@@ -90,10 +109,44 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
             'Más como contar una historia que llenar un formulario.',
             style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.grayDark),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
+          GestureDetector(
+            onTap: _pickCover,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: SizedBox(
+                height: 160,
+                width: double.infinity,
+                child: _coverPath != null
+                    ? Image.file(File(_coverPath!), fit: BoxFit.cover)
+                    : Container(
+                        color: AppColors.cream,
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.add_photo_alternate_outlined,
+                                size: 36, color: AppColors.deep),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Agregar imagen de la idea',
+                              style: GoogleFonts.dmSans(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.deep,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           TextField(
             controller: _code,
-            decoration: const InputDecoration(hintText: 'Título corto / nombre (ej. BRAILIT)'),
+            decoration: const InputDecoration(
+              hintText: 'Título corto / nombre (ej. BRAILIT)',
+            ),
           ),
           const SizedBox(height: 12),
           TextField(
@@ -111,7 +164,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
           TextField(
             controller: _why,
             maxLines: 3,
-            decoration: const InputDecoration(hintText: '¿Por qué quieres hacerlo?'),
+            decoration:
+                const InputDecoration(hintText: '¿Por qué quieres hacerlo?'),
           ),
           const SizedBox(height: 12),
           TextField(
@@ -119,7 +173,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
             maxLines: 3,
             decoration: const InputDecoration(
               hintText: '¿Qué te motiva?',
-              fillColor: AppColors.violetSoft,
+              fillColor: AppColors.cream,
             ),
           ),
           const SizedBox(height: 12),
@@ -145,7 +199,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
               groupValue: _modality,
               onChanged: (v) => setState(() => _modality = v!),
               title: Text(m.label),
-              activeColor: AppColors.violet,
+              activeColor: AppColors.primary,
               contentPadding: EdgeInsets.zero,
             ),
           ),

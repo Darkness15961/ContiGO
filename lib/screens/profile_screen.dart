@@ -51,11 +51,7 @@ class ProfileScreen extends StatelessWidget {
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.white, width: 3),
                       ),
-                      child: PersonAvatar(
-                        name: u.name,
-                        initials: u.initials,
-                        size: 84,
-                      ),
+                      child:                       PersonAvatar.fromStudent(u, size: 84),
                     ),
                     const SizedBox(height: 12),
                     Text(

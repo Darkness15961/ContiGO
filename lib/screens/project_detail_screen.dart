@@ -77,7 +77,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
           Text(p.codeName, style: brandStyle(size: 18)),
           const SizedBox(height: 6),
           Text(p.title, style: displayStyle(size: 26)),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
+          ProjectCover(project: p, height: 180, borderRadius: 18),
+          const SizedBox(height: 20),
           const SectionLabel('SOBRE LA IDEA'),
           const SizedBox(height: 8),
           Text(p.about, style: GoogleFonts.dmSans(fontSize: 15, height: 1.55)),
@@ -100,7 +102,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
           const SizedBox(height: 12),
           Row(
             children: [
-              PersonAvatar(name: a.name, initials: a.initials, size: 52),
+              PersonAvatar.fromStudent(a, size: 52),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(

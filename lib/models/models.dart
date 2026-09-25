@@ -22,6 +22,8 @@ class Student {
     required this.wantsToLearn,
     required this.availability,
     required this.modality,
+    this.photoUrl,
+    this.localPhotoPath,
   });
 
   final String id;
@@ -37,12 +39,57 @@ class Student {
   final String availability;
   final Modality modality;
 
+  /// Foto remota (simulación / mock).
+  final String? photoUrl;
+
+  /// Foto local elegida desde galería o cámara.
+  final String? localPhotoPath;
+
+  bool get hasPhoto =>
+      (localPhotoPath != null && localPhotoPath!.isNotEmpty) ||
+      (photoUrl != null && photoUrl!.isNotEmpty);
+
   String get initials => name
       .split(' ')
       .where((p) => p.isNotEmpty)
       .take(2)
       .map((p) => p[0].toUpperCase())
       .join();
+
+  Student copyWith({
+    String? name,
+    String? career,
+    String? email,
+    String? whatMovesYou,
+    String? description,
+    String? passions,
+    List<String>? skills,
+    List<String>? interests,
+    List<String>? wantsToLearn,
+    String? availability,
+    Modality? modality,
+    String? photoUrl,
+    String? localPhotoPath,
+    bool clearLocalPhoto = false,
+  }) {
+    return Student(
+      id: id,
+      name: name ?? this.name,
+      career: career ?? this.career,
+      email: email ?? this.email,
+      whatMovesYou: whatMovesYou ?? this.whatMovesYou,
+      description: description ?? this.description,
+      passions: passions ?? this.passions,
+      skills: skills ?? this.skills,
+      interests: interests ?? this.interests,
+      wantsToLearn: wantsToLearn ?? this.wantsToLearn,
+      availability: availability ?? this.availability,
+      modality: modality ?? this.modality,
+      photoUrl: photoUrl ?? this.photoUrl,
+      localPhotoPath:
+          clearLocalPhoto ? null : (localPhotoPath ?? this.localPhotoPath),
+    );
+  }
 }
 
 class ProjectIdea {
@@ -58,6 +105,8 @@ class ProjectIdea {
     required this.categories,
     required this.knowledgeAreas,
     required this.modality,
+    this.coverUrl,
+    this.localCoverPath,
   });
 
   final String id;
@@ -71,6 +120,12 @@ class ProjectIdea {
   final List<String> categories;
   final List<String> knowledgeAreas;
   final Modality modality;
+  final String? coverUrl;
+  final String? localCoverPath;
+
+  bool get hasCover =>
+      (localCoverPath != null && localCoverPath!.isNotEmpty) ||
+      (coverUrl != null && coverUrl!.isNotEmpty);
 }
 
 enum ConnectionReason {
