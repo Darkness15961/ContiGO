@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../theme/app_theme.dart';
+import '../widgets/visual.dart';
 import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,10 +23,10 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+    _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
     _fade = CurvedAnimation(parent: _c, curve: Curves.easeOut);
     _c.forward();
-    _timer = Timer(const Duration(milliseconds: 1600), () {
+    _timer = Timer(const Duration(milliseconds: 1700), () {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
@@ -47,25 +48,38 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
-      body: FadeTransition(
-        opacity: _fade,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('ContiGO', style: brandStyle(size: 48)),
-              const SizedBox(height: 12),
-              Text(
-                'Conecta ideas. Encuentra personas. Crea juntos.',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.dmSans(
-                  fontSize: 15,
-                  color: AppColors.grayDark,
-                  height: 1.4,
+      body: BlotchBackground(
+        child: FadeTransition(
+          opacity: _fade,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.handshake, color: AppColors.white, size: 48),
+                const SizedBox(height: 16),
+                Text(
+                  'ContiGO',
+                  style: GoogleFonts.fraunces(
+                    fontSize: 48,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.white,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Text(
+                    'Conecta ideas. Encuentra personas. Crea juntos.',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 15,
+                      color: AppColors.white.withValues(alpha: 0.9),
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

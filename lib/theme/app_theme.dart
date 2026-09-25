@@ -12,6 +12,8 @@ class AppColors {
   static const grayDark = Color(0xFF555555);
   static const grayLight = Color(0xFFE8E8E8);
   static const bgSoft = Color(0xFFF8F7FA);
+  static const violetMid = Color(0xFF7C3AED);
+  static const accentWarm = Color(0xFFFF8A4C);
 }
 
 class AppTheme {
@@ -19,7 +21,7 @@ class AppTheme {
     final base = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      scaffoldBackgroundColor: AppColors.white,
+      scaffoldBackgroundColor: AppColors.bgSoft,
       colorScheme: const ColorScheme.light(
         primary: AppColors.violet,
         onPrimary: AppColors.white,
@@ -37,7 +39,7 @@ class AppTheme {
         displayColor: AppColors.black,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.bgSoft,
         foregroundColor: AppColors.black,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -55,19 +57,20 @@ class AppTheme {
           disabledBackgroundColor: AppColors.violetSoft,
           disabledForegroundColor: AppColors.grayDark,
           elevation: 0,
+          shadowColor: AppColors.violet.withValues(alpha: 0.35),
           minimumSize: const Size.fromHeight(52),
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 15),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.black,
-          side: const BorderSide(color: AppColors.grayLight),
+          foregroundColor: AppColors.violetDeep,
+          side: const BorderSide(color: AppColors.violet, width: 1.4),
           minimumSize: const Size.fromHeight(52),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           textStyle: GoogleFonts.dmSans(fontWeight: FontWeight.w600, fontSize: 15),
         ),
       ),
@@ -79,19 +82,19 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.bgSoft,
+        fillColor: const Color(0xFFF3F0F8),
         hintStyle: GoogleFonts.dmSans(color: AppColors.grayDark),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.grayLight),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: AppColors.violet, width: 1.5),
         ),
       ),

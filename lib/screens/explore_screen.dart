@@ -31,7 +31,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     final results = widget.repo.explore(query: _query.text, category: _category);
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.bgSoft,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

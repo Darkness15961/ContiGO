@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../theme/app_theme.dart';
+import '../widgets/visual.dart';
 import 'login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -55,79 +56,102 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(28, 24, 28, 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('ContiGO', style: brandStyle(size: 28)),
-              Expanded(
-                child: PageView.builder(
-                  controller: _page,
-                  itemCount: _slides.length,
-                  onPageChanged: (i) => setState(() => _index = i),
-                  itemBuilder: (_, i) {
-                    final s = _slides[i];
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 48),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+      backgroundColor: AppColors.bgSoft,
+      body: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.sizeOf(context).height * 0.38,
+            child: BlotchBackground(
+              child: const SafeArea(
+                child: Center(child: ConnectionIllustration(size: 140)),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Transform.translate(
+              offset: const Offset(0, -24),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+                  boxShadow: AppShadows.card,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(28, 28, 28, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('ContiGO', style: brandStyle(size: 26)),
+                      Expanded(
+                        child: PageView.builder(
+                          controller: _page,
+                          itemCount: _slides.length,
+                          onPageChanged: (i) => setState(() => _index = i),
+                          itemBuilder: (_, i) {
+                            final s = _slides[i];
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 20),
+                                Text(
+                                  s.$1,
+                                  style: GoogleFonts.dmSans(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.violet,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Text(s.$2, style: displayStyle(size: 30)),
+                                const SizedBox(height: 12),
+                                Text(
+                                  s.$3,
+                                  style: GoogleFonts.dmSans(
+                                    fontSize: 16,
+                                    height: 1.5,
+                                    color: AppColors.grayDark,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      Row(
                         children: [
-                          Text(
-                            s.$1,
-                            style: GoogleFonts.dmSans(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.violet,
+                          for (var i = 0; i < _slides.length; i++)
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              margin: const EdgeInsets.only(right: 6),
+                              width: i == _index ? 22 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: i == _index
+                                    ? AppColors.violet
+                                    : AppColors.grayLight,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(s.$2, style: displayStyle(size: 34)),
-                          const SizedBox(height: 14),
-                          Text(
-                            s.$3,
-                            style: GoogleFonts.dmSans(
-                              fontSize: 17,
-                              height: 1.5,
-                              color: AppColors.grayDark,
-                            ),
-                          ),
                         ],
                       ),
-                    );
-                  },
-                ),
-              ),
-              Row(
-                children: [
-                  for (var i = 0; i < _slides.length; i++)
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      margin: const EdgeInsets.only(right: 6),
-                      width: i == _index ? 22 : 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: i == _index
-                            ? AppColors.violet
-                            : AppColors.grayLight,
-                        borderRadius: BorderRadius.circular(8),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _next,
+                          child: Text(
+                            _index == _slides.length - 1 ? 'Comenzar' : 'Siguiente',
+                          ),
+                        ),
                       ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _next,
-                  child: Text(_index == _slides.length - 1 ? 'Comenzar' : 'Siguiente'),
+                    ],
+                  ),
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

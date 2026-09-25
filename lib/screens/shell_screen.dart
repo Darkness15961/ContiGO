@@ -36,9 +36,15 @@ class _ShellScreenState extends State<ShellScreen> {
     return Scaffold(
       body: IndexedStack(index: _index == 2 ? 0 : _index, children: pages),
       bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.white,
-          border: Border(top: BorderSide(color: AppColors.grayLight)),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.violetDeep.withValues(alpha: 0.08),
+              blurRadius: 20,
+              offset: const Offset(0, -4),
+            ),
+          ],
         ),
         child: SafeArea(
           child: Padding(
@@ -70,9 +76,9 @@ class _ShellScreenState extends State<ShellScreen> {
                   },
                 ),
                 _NavItem(
-                  icon: Icons.favorite_border,
-                  activeIcon: Icons.favorite,
-                  label: 'Conexiones',
+                  icon: Icons.handshake_outlined,
+                  activeIcon: Icons.handshake,
+                  label: 'Matches',
                   selected: _index == 3,
                   onTap: () => setState(() => _index = 3),
                 ),
