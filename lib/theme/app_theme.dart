@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// Paleta ContiGO (jerarquía de importancia, de arriba hacia abajo).
 /// 1. #81308C  2. #521E59  3. #F2E1AC  4. #F29422  5. #F2F2F2
+/// 6. #1F8A7A — meta (sede / modalidad), no repite violeta ni naranja
 class AppColors {
   /// 1 — Principal: botones, nav activa, headers, acciones
   static const primary = Color(0xFF81308C);
@@ -14,6 +15,9 @@ class AppColors {
   static const orange = Color(0xFFF29422);
   /// 5 — Neutro: fondo de pantallas
   static const mist = Color(0xFFF2F2F2);
+  /// 6 — Meta: sede y modalidad (teal que armoniza con violeta)
+  static const teal = Color(0xFF1F8A7A);
+  static const tealSoft = Color(0xFFD9F0EC);
 
   // —— Alias usados en toda la app (misma paleta) ——
   static const violet = primary;

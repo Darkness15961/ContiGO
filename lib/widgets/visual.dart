@@ -114,7 +114,6 @@ class SoftCard extends StatelessWidget {
     required this.child,
     this.padding = const EdgeInsets.all(16),
     this.onTap,
-    this.accentBar,
     this.margin,
     this.radius = 20,
   });
@@ -122,7 +121,6 @@ class SoftCard extends StatelessWidget {
   final Widget child;
   final EdgeInsets padding;
   final VoidCallback? onTap;
-  final Color? accentBar;
   final EdgeInsets? margin;
   final double radius;
 
@@ -134,9 +132,6 @@ class SoftCard extends StatelessWidget {
         color: AppColors.white,
         borderRadius: BorderRadius.circular(radius),
         boxShadow: AppShadows.card,
-        border: accentBar == null
-            ? null
-            : Border(left: BorderSide(color: accentBar!, width: 5)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Padding(padding: padding, child: child),

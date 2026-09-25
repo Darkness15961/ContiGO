@@ -26,9 +26,19 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   final _motivation = TextEditingController();
   final _looking = TextEditingController();
   final _knowledge = TextEditingController();
-  Modality _modality = Modality.hibrida;
+  final _hashtags = TextEditingController(text: '#emprendimiento #social');
+  late Modality _modality;
+  late CampusProvince _province;
   String? _coverPath;
+  int _targetMembers = 4;
   final _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _modality = widget.repo.currentUser.modality;
+    _province = widget.repo.currentUser.province;
+  }
 
   @override
   void dispose() {
@@ -39,6 +49,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     _motivation.dispose();
     _looking.dispose();
     _knowledge.dispose();
+    _hashtags.dispose();
     super.dispose();
   }
 
@@ -58,28 +69,52 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   }
 
   void _publish() {
+    final title = _title.text.trim();
+    final about = _about.text.trim();
+    final looking = _looking.text.trim();
+
+    if (title.isEmpty || about.isEmpty || looking.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Completa título, descripción y a quién buscas.',
+            style: GoogleFonts.dmSans(),
+          ),
+          backgroundColor: AppColors.orange,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
     final knowledge = _knowledge.text
         .split(RegExp(r'[·,]'))
         .map((e) => e.trim())
         .where((e) => e.isNotEmpty)
         .toList();
+    final tags = parseHashtags(_hashtags.text);
+    if (tags.isEmpty) {
+      tags.addAll(parseHashtags('#comunidad'));
+    }
 
     widget.repo.publishProject(
       ProjectIdea(
         id: 'p-${DateTime.now().millisecondsSinceEpoch}',
         author: widget.repo.currentUser,
         codeName: _code.text.trim().isEmpty
-            ? 'IDEA'
+            ? title.split(' ').first.toUpperCase()
             : _code.text.trim().toUpperCase(),
-        title: _title.text.trim().isEmpty ? 'Nueva idea' : _title.text.trim(),
-        about: _about.text.trim(),
+        title: title,
+        about: about,
         why: _why.text.trim(),
         motivation: _motivation.text.trim(),
-        lookingForPeople: _looking.text.trim(),
-        categories: const ['Tecnología'],
+        lookingForPeople: looking,
+        hashtags: tags,
         knowledgeAreas: knowledge,
         modality: _modality,
+        province: _province,
         localCoverPath: _coverPath,
+        targetMembers: _targetMembers,
       ),
     );
 
@@ -186,22 +221,57 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
           ),
           const SizedBox(height: 12),
           TextField(
+            controller: _hashtags,
+            decoration: const InputDecoration(
+              hintText: 'Hashtags · #emprendimiento #social #tecnologia',
+              fillColor: AppColors.cream,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Como en TikTok / Yachaiya: la comunidad crea los #. Usa los que ya existen o inventa uno nuevo.',
+            style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.grayDark),
+          ),
+          const SizedBox(height: 12),
+          TextField(
             controller: _knowledge,
             decoration: const InputDecoration(
               hintText: '¿Qué conocimientos podrían aportar? (separados por ·)',
             ),
           ),
           const SizedBox(height: 16),
+          const SectionLabel('¿CUÁNTAS PERSONAS BUSCAS?'),
+          Slider(
+            value: _targetMembers.toDouble(),
+            min: 2,
+            max: 8,
+            divisions: 6,
+            label: '$_targetMembers',
+            activeColor: AppColors.primary,
+            onChanged: (v) => setState(() => _targetMembers = v.round()),
+          ),
+          Text(
+            'Meta: $_targetMembers miembros (incluido tú)',
+            style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.grayDark),
+          ),
+          const SizedBox(height: 12),
+          const SectionLabel('PROVINCIA / SEDE'),
+          const SizedBox(height: 8),
+          Text(
+            'Dónde se desarrolla o se busca al equipo',
+            style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.grayDark),
+          ),
+          const SizedBox(height: 8),
+          ProvinceChips(
+            value: _province,
+            onChanged: (v) => setState(() => _province = v),
+          ),
+          const SizedBox(height: 16),
           const SectionLabel('MODALIDAD'),
-          ...Modality.values.map(
-            (m) => RadioListTile<Modality>(
-              value: m,
-              groupValue: _modality,
-              onChanged: (v) => setState(() => _modality = v!),
-              title: Text(m.label),
-              activeColor: AppColors.primary,
-              contentPadding: EdgeInsets.zero,
-            ),
+          const SizedBox(height: 8),
+          ModalityChips(
+            value: _modality,
+            onChanged: (v) => setState(() => _modality = v),
           ),
           const SizedBox(height: 12),
           ElevatedButton(

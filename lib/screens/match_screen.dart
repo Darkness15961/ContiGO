@@ -8,27 +8,24 @@ import '../widgets/common.dart';
 import 'chat_screen.dart';
 import 'meeting_screen.dart';
 
+/// Solo se muestra cuando el creador ya registró el match.
 class MatchScreen extends StatelessWidget {
   const MatchScreen({
     super.key,
     required this.repo,
     required this.project,
+    required this.matchedWith,
+    required this.connection,
   });
 
   final MockRepository repo;
   final ProjectIdea project;
+  final Student matchedWith;
+  final TeamConnection connection;
 
   @override
   Widget build(BuildContext context) {
     final me = repo.currentUser;
-    final other = project.author;
-    TeamConnection? connection;
-    for (final c in repo.connections) {
-      if (c.project.id == project.id) {
-        connection = c;
-        break;
-      }
-    }
 
     return Scaffold(
       backgroundColor: AppColors.violetDeep,
@@ -38,14 +35,28 @@ class MatchScreen extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(),
-              const Text('💜', style: TextStyle(fontSize: 48)),
+              Icon(
+                Icons.handshake,
+                size: 56,
+                color: AppColors.cream,
+                semanticLabel: 'Match',
+              ),
               const SizedBox(height: 16),
               Text(
-                '¡Hicieron MATCH!',
-                style: displayStyle(size: 32, color: AppColors.white),
+                '¡Match registrado!',
+                style: displayStyle(size: 30, color: AppColors.white),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                project.codeName,
+                style: GoogleFonts.dmSans(
+                  color: AppColors.cream,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
               ),
               const SizedBox(height: 28),
-                  Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _MatchPerson(student: me),
@@ -59,15 +70,15 @@ class MatchScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  _MatchPerson(student: other),
+                  _MatchPerson(student: matchedWith),
                 ],
               ),
               const SizedBox(height: 28),
               Text(
-                'Ambos quieren conocer\nmás sobre este proyecto.',
+                'Ya están en el mismo proyecto.\nPueden conversar o proponer una reunión.',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.dmSans(
-                  fontSize: 16,
+                  fontSize: 15,
                   height: 1.45,
                   color: AppColors.violetSoft,
                 ),
@@ -81,21 +92,16 @@ class MatchScreen extends StatelessWidget {
                     foregroundColor: AppColors.violetDeep,
                   ),
                   onPressed: () {
-                    final c = connection;
-                    if (c == null) {
-                      Navigator.pop(context);
-                      return;
-                    }
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (_) => ChatScreen(
                           repo: repo,
-                          connection: c,
+                          connection: connection,
                         ),
                       ),
                     );
                   },
-                  child: const Text('Conocer al equipo'),
+                  child: const Text('Abrir chat'),
                 ),
               ),
               const SizedBox(height: 10),
@@ -109,7 +115,10 @@ class MatchScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => MeetingScreen(repo: repo),
+                        builder: (_) => MeetingScreen(
+                          repo: repo,
+                          connection: connection,
+                        ),
                       ),
                     );
                   },
@@ -120,7 +129,7 @@ class MatchScreen extends StatelessWidget {
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Volver',
+                  'Listo',
                   style: GoogleFonts.dmSans(color: AppColors.violetSoft),
                 ),
               ),

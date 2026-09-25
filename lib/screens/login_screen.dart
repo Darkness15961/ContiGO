@@ -26,8 +26,42 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _enter() {
+    final email = _email.text.trim().toLowerCase();
+    if (email.isEmpty || !email.contains('@')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Ingresa un correo válido para la demo.',
+            style: GoogleFonts.dmSans(),
+          ),
+          backgroundColor: AppColors.orange,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    // Simulación: cualquier correo institucional entra como Eduardo (seed demo).
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => ShellScreen(repo: MockRepository())),
+    );
+  }
+
+  void _forgotPassword() {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Recuperar acceso', style: displayStyle(size: 20)),
+        content: Text(
+          'En la simulación no hay backend. Con Supabase esto enviará un enlace al correo institucional.',
+          style: GoogleFonts.dmSans(fontSize: 14, height: 1.4),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Entendido'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -79,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Usa tu correo institucional',
+                  'Demo: entra como Eduardo con ideas y solicitudes listas',
                   style: GoogleFonts.dmSans(
                     fontSize: 13,
                     color: AppColors.grayDark,
@@ -90,19 +124,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _email,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
-                    hintText: 'Correo institucional',
+                    labelText: 'Correo institucional',
+                    hintText: 'correo@continental.edu.pe',
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: _password,
                   obscureText: true,
-                  decoration: const InputDecoration(hintText: 'Contraseña'),
+                  decoration: const InputDecoration(
+                    labelText: 'Contraseña',
+                    hintText: 'Contraseña',
+                  ),
                 ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: _forgotPassword,
                     child: Text(
                       '¿Olvidaste tu contraseña?',
                       style: GoogleFonts.dmSans(
@@ -134,7 +172,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                        child: const Icon(Icons.handshake, size: 24),
+                        child: const Icon(
+                          Icons.handshake,
+                          size: 24,
+                          semanticLabel: 'Entrar a la demo',
+                        ),
                       ),
                     ),
                   ],

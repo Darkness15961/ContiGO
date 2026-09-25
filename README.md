@@ -114,83 +114,52 @@ El creador también declara:
 
 ---
 
-## Flujo
+## Flujo (simulación actual)
 
 ```
-        IDEA
-          │
-          ▼
-   QUIÉN LA PROPONE
-          │
-          ▼
-      ¿TE MUEVE?
-      ┌────┴────┐
-      NO        SÍ
-                │
-                ▼
-              MATCH
-                │
-                ▼
-          CONVERSACIÓN
-                │
-                ▼
-             REUNIÓN
-                │
-                ▼
-              EQUIPO
-                │
-                ▼
-             AVANZAR
+Explorar / #hashtag
+        │
+        ▼
+   Detalle idea  ──Me interesa──►  Solicitud (pendiente)
+        │                                  │
+   (si eres creador)                       │
+        ▼                                  ▼
+ Gestionar equipo  ◄── Registrar match ────┘
+        │
+        ▼
+     ¡Match! → Chat → Reunión
+        │
+   Cupo lleno → publicación pausada
 ```
 
-Las **habilidades** quedan como información complementaria, no como criterio principal.
-
-Más adelante ContiGO puede incorporar **compatibilidad de equipo**: no solo formar el match, sino sostener si las personas realmente quieren avanzar juntas.
+| Pantalla | Rol |
+|----------|-----|
+| **Inicio** | Hub personal: mis ideas, pendientes, match |
+| **Explorar** | Catálogo público + búsqueda + `#` |
+| **＋ Crear** | Publicar idea con hashtags y meta de miembros |
+| **Match** | Conversaciones (nuevas / en conversación / equipos) |
+| **Perfil** | Carta “qué me mueve” + mis proyectos |
 
 ---
 
-## Señales del match (concepto)
+## MVP (vistas)
 
-Antes del algoritmo en código, ContiGO responde:
+Splash · Onboarding · Login · Registro · Crear perfil · Inicio · Explorar · Detalle proyecto · Crear proyecto · Solicitud de interés · Gestionar equipo · Match (celebración) · Conversación · Proponer reunión · Mi perfil
 
-*¿Qué hace que Eduardo conecte con la idea de Ana?*
-
-Señales candidatas:
-
-- Tema de la idea
-- Motivación compartida
-- Intereses en común
-- Forma de trabajar
-- Disponibilidad
-- Disposición declarada (curiosidad, aprender, emprender)
-- Razones explícitas de conexión
-
-Las skills entran como contexto secundario (enseñar / aprender), no como filtro duro.
+Navegación: **Inicio · Explorar · ＋ Crear · Match · Perfil**
 
 ---
 
 ## Identidad visual
 
-Violeta = conexión · Blanco = descubrimiento · Negro = contenido
-
 | Color | Hex | Uso |
 |-------|-----|-----|
-| Principal | `#81308C` | Botones, nav, headers, acciones |
-| Profundo | `#521E59` | Manchas, títulos, texto |
-| Suave | `#F2E1AC` | Chips, tags, acentos claros |
-| Acento | `#F29422` | CTAs especiales, highlights |
-| Neutro | `#F2F2F2` | Fondo de pantallas |
-
-Distribución aproximada: **70%** claros · **20%** violeta · **10%** negro.  
-El violeta se intensifica en: *Me interesa → Match → Conexión → Reunión*.
-
----
-
-## MVP (15 vistas)
-
-Splash · Onboarding · Login · Registro · Crear perfil · Inicio · Explorar · Detalle proyecto · Crear proyecto · Solicitud de interés · Match · Conversación · Proponer reunión · Mi perfil
-
-Navegación: **Inicio · Explorar · ＋ Crear · Match (apretón de manos) · Perfil**
+| Principal | `#81308C` | Botones, nav, headers |
+| Profundo | `#521E59` | Títulos, texto fuerte |
+| Suave | `#F2E1AC` | Chips, tags |
+| Acento | `#F29422` | Alertas / CTAs especiales |
+| Meta | `#1F8A7A` | Sede y modalidad |
+| Neutro | `#F2F2F2` | Fondos |
 
 ---
 

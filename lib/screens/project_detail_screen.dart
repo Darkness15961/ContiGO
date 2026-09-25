@@ -6,8 +6,9 @@ import '../models/models.dart';
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
 import 'interest_screen.dart';
-import 'match_screen.dart';
+import 'manage_team_screen.dart';
 
+/// Detalle mínimo: idea + creador + CTA. Sin bloques repetidos.
 class ProjectDetailScreen extends StatefulWidget {
   const ProjectDetailScreen({
     super.key,
@@ -35,10 +36,25 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
 
   bool get _isMine => widget.project.author.id == widget.repo.currentUser.id;
   bool get _interested =>
-      widget.repo.interestedProjectIds.contains(widget.project.id);
+      widget.repo.interestedProjectIds.contains(widget.project.id) ||
+      widget.project.pendingRequests
+          .any((r) => r.from.id == widget.repo.currentUser.id);
 
   Future<void> _openInterest() async {
     if (_isMine || _interested) return;
+    if (!widget.project.isPublished) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Este proyecto ya no busca personas (pausado).',
+            style: GoogleFonts.dmSans(),
+          ),
+          backgroundColor: AppColors.orange,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
     final note = await Navigator.of(context).push<String>(
       MaterialPageRoute(
         builder: (_) => InterestScreen(project: widget.project),
@@ -48,9 +64,23 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
     if (note == null || note.isEmpty) return;
     widget.repo.expressInterest(widget.project.id, note);
     if (!mounted) return;
+    setState(() {});
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Solicitud enviada. El creador registrará el match si hay conexión.',
+          style: GoogleFonts.dmSans(),
+        ),
+        backgroundColor: AppColors.primary,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Future<void> _openManageTeam() async {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => MatchScreen(
+        builder: (_) => ManageTeamScreen(
           repo: widget.repo,
           project: widget.project,
         ),
@@ -72,37 +102,69 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
         children: [
-          const SectionLabel('💡 TÍTULO'),
-          const SizedBox(height: 8),
-          Text(p.codeName, style: brandStyle(size: 18)),
-          const SizedBox(height: 6),
-          Text(p.title, style: displayStyle(size: 26)),
-          const SizedBox(height: 16),
           ProjectCover(project: p, height: 180, borderRadius: 18),
-          const SizedBox(height: 20),
-          const SectionLabel('SOBRE LA IDEA'),
-          const SizedBox(height: 8),
-          Text(p.about, style: GoogleFonts.dmSans(fontSize: 15, height: 1.55)),
-          const SizedBox(height: 24),
-          const SectionLabel('¿POR QUÉ QUIERO HACERLO?'),
-          const SizedBox(height: 8),
-          Text(p.why, style: GoogleFonts.dmSans(fontSize: 15, height: 1.55)),
+          const SizedBox(height: 16),
+          Text(p.title, style: displayStyle(size: 24)),
+          const SizedBox(height: 10),
+          TagWrap(tags: p.hashtags, asHashtags: true),
+          const SizedBox(height: 10),
+          MetaBadgeRow(province: p.province, modality: p.modality),
           const SizedBox(height: 8),
           Text(
-            p.motivation,
+            '${p.memberCount}/${p.targetMembers} miembros'
+            '${p.isPublished ? '' : ' · Pausado'}',
             style: GoogleFonts.dmSans(
-              fontSize: 14,
-              height: 1.5,
-              fontStyle: FontStyle.italic,
+              fontSize: 13,
               color: AppColors.grayDark,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 28),
-          const SectionLabel('👤 CONOCE AL CREADOR'),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
+          Text(
+            p.about,
+            style: GoogleFonts.dmSans(fontSize: 15, height: 1.55),
+          ),
+          if (p.why.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              p.why,
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                height: 1.5,
+                color: AppColors.grayDark,
+              ),
+            ),
+          ],
+          if (p.motivation.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              p.motivation,
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                height: 1.5,
+                fontStyle: FontStyle.italic,
+                color: AppColors.deep,
+              ),
+            ),
+          ],
+          if (p.knowledgeAreas.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(
+              'Conocimientos que podrían aportar',
+              style: GoogleFonts.dmSans(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: AppColors.grayDark,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TagWrap(tags: p.knowledgeAreas),
+          ],
+          const SizedBox(height: 24),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              PersonAvatar.fromStudent(a, size: 52),
+              PersonAvatar.fromStudent(a, size: 48),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -112,7 +174,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                       a.name,
                       style: GoogleFonts.dmSans(
                         fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                        fontSize: 15,
                       ),
                     ),
                     Text(
@@ -122,78 +184,61 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                         color: AppColors.grayDark,
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    MetaBadgeRow(province: a.province, modality: a.modality),
+                    if (a.whatMovesYou.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        a.whatMovesYou,
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 13,
+                          height: 1.4,
+                          color: AppColors.deep,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Text('¿Qué me mueve?', style: displayStyle(size: 20)),
-          const SizedBox(height: 8),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.violetSoft,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Text(
-              a.whatMovesYou,
-              style: GoogleFonts.dmSans(
-                fontSize: 14,
-                height: 1.5,
-                color: AppColors.violetDeep,
-              ),
-            ),
-          ),
-          const SizedBox(height: 28),
-          const SectionLabel('ESTOY BUSCANDO'),
-          const SizedBox(height: 8),
-          TagWrap(tags: p.knowledgeAreas),
           const SizedBox(height: 20),
-          const SectionLabel('¿QUÉ BUSCO EN LAS PERSONAS?'),
-          const SizedBox(height: 8),
           Text(
-            p.lookingForPeople,
-            style: GoogleFonts.dmSans(fontSize: 15, height: 1.55),
-          ),
-          const SizedBox(height: 20),
-          const SectionLabel('MODALIDAD'),
-          const SizedBox(height: 8),
-          Text(
-            p.modality.label,
-            style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.bgSoft,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Text(
-              'No buscamos personas perfectas. Buscamos personas que conecten con una idea. Lo demás se aprende.',
-              style: GoogleFonts.dmSans(
-                fontSize: 14,
-                height: 1.45,
-                color: AppColors.grayDark,
-              ),
-            ),
+            'Busca: ${p.lookingForPeople}',
+            style: GoogleFonts.dmSans(fontSize: 14, height: 1.45),
           ),
         ],
       ),
-      bottomNavigationBar: _isMine
-          ? null
-          : SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
-                child: ElevatedButton.icon(
-                  onPressed: _interested ? null : _openInterest,
-                  icon: Icon(_interested ? Icons.favorite : Icons.favorite_border),
-                  label: Text(_interested ? 'Ya enviaste interés' : 'Me interesa'),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+          child: _isMine
+              ? ElevatedButton.icon(
+                  onPressed: _openManageTeam,
+                  icon: const Icon(Icons.groups_outlined),
+                  label: Text(
+                    p.pendingRequests.isEmpty
+                        ? 'Gestionar equipo'
+                        : 'Gestionar equipo · ${p.pendingRequests.length}',
+                  ),
+                )
+              : ElevatedButton.icon(
+                  onPressed: (_interested || !p.isPublished) ? null : _openInterest,
+                  icon: Icon(
+                    _interested ? Icons.favorite : Icons.favorite_border,
+                  ),
+                  label: Text(
+                    !p.isPublished
+                        ? 'Ya no busca miembros'
+                        : _interested
+                            ? 'Solicitud enviada'
+                            : 'Me interesa',
+                  ),
                 ),
-              ),
-            ),
+        ),
+      ),
     );
   }
 }

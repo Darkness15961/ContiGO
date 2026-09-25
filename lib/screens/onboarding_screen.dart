@@ -128,6 +128,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                     ),
                   ),
+                  if (_index < _slides.length - 1)
+                    Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => const LoginScreen(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Saltar',
+                          style: GoogleFonts.dmSans(color: AppColors.grayDark),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),

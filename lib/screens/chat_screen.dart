@@ -55,12 +55,16 @@ class _ChatScreenState extends State<ChatScreen> {
         actions: [
           IconButton(
             tooltip: 'Proponer reunión',
-            onPressed: () {
-              Navigator.of(context).push(
+            onPressed: () async {
+              await Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => MeetingScreen(repo: widget.repo),
+                  builder: (_) => MeetingScreen(
+                    repo: widget.repo,
+                    connection: widget.connection,
+                  ),
                 ),
               );
+              if (mounted) setState(() {});
             },
             icon: const Icon(Icons.event_outlined, color: AppColors.violet),
           ),

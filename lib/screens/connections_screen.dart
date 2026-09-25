@@ -26,8 +26,7 @@ class _ConnectionsScreenState extends State<ConnectionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final list =
-        widget.repo.connections.where((c) => c.bucket == _bucket).toList();
+    final list = widget.repo.myConnections(bucket: _bucket);
 
     return Scaffold(
       backgroundColor: AppColors.bgSoft,
@@ -103,7 +102,6 @@ class _ConnectionsScreenState extends State<ConnectionsScreen> {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
                 child: SoftCard(
-                  accentBar: AppColors.violet,
                   onTap: () async {
                     await Navigator.of(context).push(
                       MaterialPageRoute(

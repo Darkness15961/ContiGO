@@ -33,6 +33,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   late final TextEditingController _availability;
   late final TextEditingController _moves;
   late Modality _modality;
+  late CampusProvince _province;
   String? _localPhotoPath;
   String? _photoUrl;
   final _picker = ImagePicker();
@@ -51,6 +52,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     _availability = TextEditingController(text: u.availability);
     _moves = TextEditingController(text: u.whatMovesYou);
     _modality = u.modality;
+    _province = u.province;
     _localPhotoPath = u.localPhotoPath;
     _photoUrl = u.photoUrl;
   }
@@ -95,18 +97,42 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   void _save() {
     final u = widget.repo.currentUser;
+    final name = _name.text.trim().isEmpty ? u.name : _name.text.trim();
+    final career = _career.text.trim();
+    final moves = _moves.text.trim();
+
+    if (widget.isFirstTime && (career.isEmpty || moves.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Completa carrera y “¿Qué te mueve?” para continuar.',
+            style: GoogleFonts.dmSans(),
+          ),
+          backgroundColor: AppColors.orange,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final interestsRaw = parseHashtags(_interests.text);
+    final interests = interestsRaw.isNotEmpty
+        ? interestsRaw
+        : _split(_interests.text);
+
     widget.repo.updateProfile(
       u.copyWith(
-        name: _name.text.trim().isEmpty ? u.name : _name.text.trim(),
-        career: _career.text.trim().isEmpty ? u.career : _career.text.trim(),
+        name: name,
+        career: career.isEmpty ? u.career : career,
         description: _desc.text.trim(),
         passions: _passions.text.trim(),
-        whatMovesYou: _moves.text.trim(),
+        whatMovesYou: moves.isEmpty ? u.whatMovesYou : moves,
         skills: _split(_skills.text),
-        interests: _split(_interests.text),
+        interests: interests,
         wantsToLearn: _split(_learn.text),
         availability: _availability.text.trim(),
         modality: _modality,
+        province: _province,
         photoUrl: _photoUrl,
         localPhotoPath: _localPhotoPath,
       ),
@@ -216,8 +242,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
           const SizedBox(height: 12),
           TextField(
             controller: _interests,
-            decoration:
-                const InputDecoration(hintText: '¿Qué temas te interesan?'),
+            decoration: const InputDecoration(
+              hintText: 'Intereses (#emprendimiento #social …)',
+            ),
           ),
           const SizedBox(height: 12),
           TextField(
@@ -233,17 +260,18 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             ),
           ),
           const SizedBox(height: 16),
+          const SectionLabel('SEDE / PROVINCIA'),
+          const SizedBox(height: 8),
+          ProvinceChips(
+            value: _province,
+            onChanged: (v) => setState(() => _province = v),
+          ),
+          const SizedBox(height: 16),
           const SectionLabel('MODALIDAD'),
           const SizedBox(height: 8),
-          ...Modality.values.map(
-            (m) => RadioListTile<Modality>(
-              value: m,
-              groupValue: _modality,
-              onChanged: (v) => setState(() => _modality = v!),
-              title: Text(m.label),
-              activeColor: AppColors.primary,
-              contentPadding: EdgeInsets.zero,
-            ),
+          ModalityChips(
+            value: _modality,
+            onChanged: (v) => setState(() => _modality = v),
           ),
           const SizedBox(height: 8),
           Text('¿Qué te mueve?', style: displayStyle(size: 22)),

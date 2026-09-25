@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/models.dart';
 import '../theme/app_theme.dart';
 
+/// Nota + razones opcionales. El creador decide el match.
 class InterestScreen extends StatefulWidget {
   const InterestScreen({super.key, required this.project});
 
@@ -23,12 +24,25 @@ class _InterestScreenState extends State<InterestScreen> {
     super.dispose();
   }
 
+  bool get _canSend =>
+      _note.text.trim().isNotEmpty || _reasons.isNotEmpty;
+
+  void _submit() {
+    final note = _note.text.trim();
+    final reasons = _reasons.map((e) => e.label).join(' · ');
+    final text = [
+      if (reasons.isNotEmpty) reasons,
+      if (note.isNotEmpty) note,
+    ].join('\n');
+    Navigator.pop(context, text);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: Text('Solicitud de interés', style: displayStyle(size: 20)),
+        title: Text('Me interesa', style: displayStyle(size: 20)),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
@@ -42,10 +56,13 @@ class _InterestScreenState extends State<InterestScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          Text('¿Qué te conectó con esta idea?', style: displayStyle(size: 26)),
+          Text(
+            '¿Qué te conectó con esta idea?',
+            style: displayStyle(size: 24),
+          ),
           const SizedBox(height: 8),
           Text(
-            'Cuéntale al creador por qué quieres conocer el proyecto.',
+            'Elige una o más razones y, si quieres, deja una nota. El creador registrará el match.',
             style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.grayDark),
           ),
           const SizedBox(height: 16),
@@ -73,7 +90,7 @@ class _InterestScreenState extends State<InterestScreen> {
                         ? AppColors.white
                         : AppColors.black,
                     fontWeight: FontWeight.w600,
-                    fontSize: 13,
+                    fontSize: 12,
                   ),
                 ),
             ],
@@ -81,25 +98,19 @@ class _InterestScreenState extends State<InterestScreen> {
           const SizedBox(height: 16),
           TextField(
             controller: _note,
-            maxLines: 5,
+            maxLines: 4,
             onChanged: (_) => setState(() {}),
             decoration: const InputDecoration(
+              labelText: 'Nota (opcional si ya elegiste razones)',
               hintText:
-                  'Ej: Me encanta el problema. No sé Braille, pero quiero aprender y ayudar a construirla.',
+                  'Ej: Me enamora el problema. No sé todo, pero quiero aprender.',
               fillColor: AppColors.violetSoft,
             ),
           ),
           const SizedBox(height: 24),
           ElevatedButton(
-            onPressed: (_note.text.trim().isEmpty && _reasons.isEmpty)
-                ? null
-                : () {
-                    final text = _note.text.trim().isNotEmpty
-                        ? _note.text.trim()
-                        : _reasons.map((e) => e.label).join(' · ');
-                    Navigator.pop(context, text);
-                  },
-            child: const Text('Enviar interés'),
+            onPressed: _canSend ? _submit : null,
+            child: const Text('Enviar solicitud'),
           ),
         ],
       ),

@@ -159,10 +159,16 @@ class SectionLabel extends StatelessWidget {
 }
 
 class TagWrap extends StatelessWidget {
-  const TagWrap({super.key, required this.tags, this.filled = true});
+  const TagWrap({
+    super.key,
+    required this.tags,
+    this.filled = true,
+    this.asHashtags = false,
+  });
 
   final List<String> tags;
   final bool filled;
+  final bool asHashtags;
 
   @override
   Widget build(BuildContext context) {
@@ -180,14 +186,93 @@ class TagWrap extends StatelessWidget {
               border: filled ? null : Border.all(color: AppColors.grayLight),
             ),
             child: Text(
-              tag,
+              asHashtags
+                  ? (tag.startsWith('#') ? tag : '#$tag')
+                  : tag,
               style: GoogleFonts.dmSans(
                 fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: AppColors.deep,
+                fontWeight: FontWeight.w700,
+                color: AppColors.primary,
               ),
             ),
           ),
+      ],
+    );
+  }
+}
+
+/// Badge de sede / modalidad (color teal, distinto de violeta y naranja).
+class MetaBadge extends StatelessWidget {
+  const MetaBadge({
+    super.key,
+    required this.label,
+    this.icon,
+    this.filled = true,
+  });
+
+  final String label;
+  final IconData? icon;
+  final bool filled;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: filled ? AppColors.tealSoft : AppColors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: filled ? AppColors.tealSoft : AppColors.teal,
+          width: 1.2,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 13, color: AppColors.teal),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            label,
+            style: GoogleFonts.dmSans(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              color: AppColors.teal,
+              letterSpacing: 0.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MetaBadgeRow extends StatelessWidget {
+  const MetaBadgeRow({
+    super.key,
+    required this.province,
+    required this.modality,
+  });
+
+  final CampusProvince province;
+  final Modality modality;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 6,
+      children: [
+        MetaBadge(
+          label: province.label,
+          icon: Icons.location_on_outlined,
+        ),
+        MetaBadge(
+          label: modality.label,
+          icon: Icons.videocam_outlined,
+          filled: false,
+        ),
       ],
     );
   }
@@ -281,4 +366,83 @@ class PhotoPickerSheet extends StatelessWidget {
   }
 }
 
+/// Selector de sede / provincia.
+class ProvinceChips extends StatelessWidget {
+  const ProvinceChips({
+    super.key,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final CampusProvince value;
+  final ValueChanged<CampusProvince> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final p in CampusProvince.values)
+          ChoiceChip(
+            label: Text(p.label),
+            selected: value == p,
+            onSelected: (_) => onChanged(p),
+            selectedColor: AppColors.primary,
+            labelStyle: GoogleFonts.dmSans(
+              color: value == p ? AppColors.white : AppColors.deep,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
+            backgroundColor: AppColors.white,
+            side: BorderSide(
+              color: value == p ? AppColors.primary : AppColors.grayLight,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 enum ImageSourceChoice { gallery, camera }
+
+/// Selector de modalidad sin RadioListTile deprecado.
+class ModalityChips extends StatelessWidget {
+  const ModalityChips({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    this.options = Modality.values,
+  });
+
+  final Modality value;
+  final ValueChanged<Modality> onChanged;
+  final List<Modality> options;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final m in options)
+          ChoiceChip(
+            label: Text(m.label),
+            selected: value == m,
+            onSelected: (_) => onChanged(m),
+            selectedColor: AppColors.primary,
+            labelStyle: GoogleFonts.dmSans(
+              color: value == m ? AppColors.white : AppColors.deep,
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
+            backgroundColor: AppColors.white,
+            side: BorderSide(
+              color: value == m ? AppColors.primary : AppColors.grayLight,
+            ),
+          ),
+      ],
+    );
+  }
+}
+

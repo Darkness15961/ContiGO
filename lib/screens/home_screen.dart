@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../data/mock_repository.dart';
+import '../models/models.dart';
 import '../theme/app_theme.dart';
 import '../widgets/common.dart';
-import '../widgets/project_card.dart';
 import '../widgets/visual.dart';
+import 'manage_team_screen.dart';
 import 'project_detail_screen.dart';
 
+/// Inicio = hub personal. El catálogo vive solo en Explorar.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.repo, required this.onChanged});
 
@@ -18,9 +20,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = repo.currentUser;
     final firstName = user.name.split(' ').first;
-    final projects = repo.recommended();
-    final matchCount = repo.connections.length;
-    final ideaCount = repo.projects.length;
+    final mine = repo.myProjects();
+    final pending = mine.fold<int>(0, (n, p) => n + p.pendingRequests.length);
+    final matches = repo.myConnections().length;
 
     return Scaffold(
       backgroundColor: AppColors.bgSoft,
@@ -28,22 +30,13 @@ class HomeScreen extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           OverlapHeader(
-            toolbar: Row(
-              children: [
-                Text(
-                  'ContiGO',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.white,
-                  ),
-                ),
-                const Spacer(),
-                Icon(
-                  Icons.notifications_none_rounded,
-                  color: AppColors.white.withValues(alpha: 0.95),
-                ),
-              ],
+            toolbar: Text(
+              'ContiGO',
+              style: GoogleFonts.dmSans(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: AppColors.white,
+              ),
             ),
             overlapChild: SoftCard(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -70,28 +63,6 @@ class HomeScreen extends StatelessWidget {
                             color: AppColors.grayDark,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Container(
-                              width: 7,
-                              height: 7,
-                              decoration: const BoxDecoration(
-                                color: AppColors.success,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              'Listo para conectar',
-                              style: GoogleFonts.dmSans(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.success,
-                              ),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ),
@@ -100,83 +71,181 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '¿Con qué idea quieres conectar hoy?',
+                  'Tu espacio. Las ideas nuevas están en Explorar.',
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
                     color: AppColors.grayDark,
                     height: 1.35,
                   ),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(
                       child: SoftCard(
                         padding: const EdgeInsets.all(14),
-                        child: _StatBlock(
-                          label: 'Ideas',
-                          value: '$ideaCount',
-                          progress: 0.7,
-                          color: AppColors.violet,
+                        child: _MiniStat(
+                          label: 'Mis ideas',
+                          value: '${mine.length}',
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: SoftCard(
                         padding: const EdgeInsets.all(14),
-                        child: _StatBlock(
+                        child: _MiniStat(
                           label: 'Match',
-                          value: '$matchCount',
-                          progress: (matchCount / 5).clamp(0.15, 1),
-                          color: AppColors.accentPink,
+                          value: '$matches',
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: SoftCard(
+                        padding: const EdgeInsets.all(14),
+                        child: _MiniStat(
+                          label: 'Pendientes',
+                          value: '$pending',
+                          highlight: pending > 0,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 22),
-                Text('Proyectos para ti', style: displayStyle(size: 20)),
-                const SizedBox(height: 12),
-                for (var i = 0; i < projects.length; i++) ...[
-                  ProjectCard(
-                    project: projects[i],
-                    interested:
-                        repo.interestedProjectIds.contains(projects[i].id),
-                    accentColor:
-                        i.isEven ? AppColors.violet : AppColors.accentPink,
+                if (pending > 0) ...[
+                  const SizedBox(height: 20),
+                  Text('Solicitudes por revisar', style: displayStyle(size: 18)),
+                  const SizedBox(height: 8),
+                  SoftCard(
                     onTap: () async {
+                      final withPending = mine.firstWhere(
+                        (p) => p.pendingRequests.isNotEmpty,
+                      );
                       await Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => ProjectDetailScreen(
+                          builder: (_) => ManageTeamScreen(
                             repo: repo,
-                            project: projects[i],
+                            project: withPending,
                           ),
                         ),
                       );
                       onChanged();
                     },
-                    onInterest: () async {
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => ProjectDetailScreen(
-                            repo: repo,
-                            project: projects[i],
-                            openInterest: true,
+                    child: Row(
+                      children: [
+                        Icon(Icons.handshake_outlined, color: AppColors.primary),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            '$pending persona(s) esperan que registres el match',
+                            style: GoogleFonts.dmSans(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
-                      );
-                      onChanged();
-                    },
+                        const Icon(Icons.chevron_right, color: AppColors.grayDark),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 12),
                 ],
-                const SizedBox(height: 16),
+                if (mine.isNotEmpty) ...[
+                  const SizedBox(height: 22),
+                  Text('Mis proyectos', style: displayStyle(size: 18)),
+                  const SizedBox(height: 10),
+                  for (final p in mine)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: SoftCard(
+                        onTap: () async {
+                          await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => ProjectDetailScreen(
+                                repo: repo,
+                                project: p,
+                              ),
+                            ),
+                          );
+                          onChanged();
+                        },
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 12,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    p.codeName,
+                                    style: GoogleFonts.dmSans(
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 13,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    p.title,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.dmSans(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${p.province.label} · ${p.modality.label} · '
+                                    '${p.memberCount}/${p.targetMembers} · '
+                                    '${p.isPublished ? 'Publicado' : 'Pausado'}'
+                                    '${p.pendingRequests.isEmpty ? '' : ' · ${p.pendingRequests.length} solicitudes'}',
+                                    style: GoogleFonts.dmSans(
+                                      fontSize: 12,
+                                      color: AppColors.grayDark,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(
+                              Icons.chevron_right,
+                              color: AppColors.grayDark,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+                const SizedBox(height: 22),
+                SoftCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '¿Buscas una idea?',
+                        style: displayStyle(size: 17),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Explorar es el catálogo: busca por #emprendimiento, #social y más.',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 13,
+                          color: AppColors.grayDark,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -186,42 +255,32 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _StatBlock extends StatelessWidget {
-  const _StatBlock({
+class _MiniStat extends StatelessWidget {
+  const _MiniStat({
     required this.label,
     required this.value,
-    required this.progress,
-    required this.color,
+    this.highlight = false,
   });
 
   final String label;
   final String value;
-  final double progress;
-  final Color color;
+  final bool highlight;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           label,
-          style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.grayDark),
+          style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.grayDark),
         ),
         const SizedBox(height: 2),
         Text(
           value,
-          style: displayStyle(size: 24, color: AppColors.violetDeep),
-        ),
-        const SizedBox(height: 8),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(
-            value: progress,
-            minHeight: 5,
-            backgroundColor: AppColors.violetSoft,
-            color: color,
+          style: displayStyle(
+            size: 22,
+            color: highlight ? AppColors.orange : AppColors.deep,
           ),
         ),
       ],

@@ -8,6 +8,38 @@ extension ModalityX on Modality {
       };
 }
 
+/// Sedes / provincias donde opera ContiGO (Universidad Continental).
+enum CampusProvince { huancayo, cusco, arequipa, lima }
+
+extension CampusProvinceX on CampusProvince {
+  String get label => switch (this) {
+        CampusProvince.huancayo => 'Huancayo',
+        CampusProvince.cusco => 'Cusco',
+        CampusProvince.arequipa => 'Arequipa',
+        CampusProvince.lima => 'Lima',
+      };
+}
+
+/// Normaliza tags de comunidad: "Emprendimiento" / "#emprendimiento" → "#emprendimiento"
+String normalizeHashtag(String raw) {
+  var t = raw.trim().toLowerCase();
+  if (t.isEmpty) return '';
+  t = t.replaceAll(RegExp(r'\s+'), '');
+  if (!t.startsWith('#')) t = '#$t';
+  t = t.replaceAll(RegExp(r'[^#a-záéíóúüñ0-9]', caseSensitive: false), '');
+  return t.length > 1 ? t : '';
+}
+
+List<String> parseHashtags(String raw) {
+  final parts = raw.split(RegExp(r'[\s,·]+'));
+  final out = <String>{};
+  for (final p in parts) {
+    final h = normalizeHashtag(p);
+    if (h.isNotEmpty) out.add(h);
+  }
+  return out.toList();
+}
+
 class Student {
   const Student({
     required this.id,
@@ -22,6 +54,7 @@ class Student {
     required this.wantsToLearn,
     required this.availability,
     required this.modality,
+    required this.province,
     this.photoUrl,
     this.localPhotoPath,
   });
@@ -38,11 +71,9 @@ class Student {
   final List<String> wantsToLearn;
   final String availability;
   final Modality modality;
-
-  /// Foto remota (simulación / mock).
+  /// Sede / provincia del estudiante.
+  final CampusProvince province;
   final String? photoUrl;
-
-  /// Foto local elegida desde galería o cámara.
   final String? localPhotoPath;
 
   bool get hasPhoto =>
@@ -68,6 +99,7 @@ class Student {
     List<String>? wantsToLearn,
     String? availability,
     Modality? modality,
+    CampusProvince? province,
     String? photoUrl,
     String? localPhotoPath,
     bool clearLocalPhoto = false,
@@ -85,6 +117,7 @@ class Student {
       wantsToLearn: wantsToLearn ?? this.wantsToLearn,
       availability: availability ?? this.availability,
       modality: modality ?? this.modality,
+      province: province ?? this.province,
       photoUrl: photoUrl ?? this.photoUrl,
       localPhotoPath:
           clearLocalPhoto ? null : (localPhotoPath ?? this.localPhotoPath),
@@ -92,8 +125,22 @@ class Student {
   }
 }
 
+class InterestRequest {
+  InterestRequest({
+    required this.id,
+    required this.from,
+    required this.note,
+    required this.at,
+  });
+
+  final String id;
+  Student from;
+  final String note;
+  final DateTime at;
+}
+
 class ProjectIdea {
-  const ProjectIdea({
+  ProjectIdea({
     required this.id,
     required this.author,
     required this.codeName,
@@ -102,30 +149,52 @@ class ProjectIdea {
     required this.why,
     required this.motivation,
     required this.lookingForPeople,
-    required this.categories,
+    required this.hashtags,
     required this.knowledgeAreas,
     required this.modality,
+    required this.province,
     this.coverUrl,
     this.localCoverPath,
-  });
+    this.isPublished = true,
+    this.targetMembers = 4,
+    List<Student>? members,
+    List<InterestRequest>? pendingRequests,
+  })  : members = members ?? [author],
+        pendingRequests = pendingRequests ?? [];
 
   final String id;
-  final Student author;
+  Student author;
   final String codeName;
   final String title;
   final String about;
   final String why;
   final String motivation;
   final String lookingForPeople;
-  final List<String> categories;
+  /// Hashtags de comunidad: #emprendimiento #social …
+  final List<String> hashtags;
   final List<String> knowledgeAreas;
   final Modality modality;
+  /// Provincia / sede donde se desarrolla o se busca equipo.
+  final CampusProvince province;
   final String? coverUrl;
   final String? localCoverPath;
+  bool isPublished;
+  final int targetMembers;
+  final List<Student> members;
+  final List<InterestRequest> pendingRequests;
 
   bool get hasCover =>
       (localCoverPath != null && localCoverPath!.isNotEmpty) ||
       (coverUrl != null && coverUrl!.isNotEmpty);
+
+  int get memberCount => members.length;
+
+  bool get hasEnoughMembers => memberCount >= targetMembers;
+
+  bool isMember(String studentId) => members.any((m) => m.id == studentId);
+
+  /// Alias legacy para UI que aún diga categories.
+  List<String> get categories => hashtags;
 }
 
 enum ConnectionReason {
@@ -181,6 +250,7 @@ class ChatMessage {
 
 class MeetingProposal {
   const MeetingProposal({
+    required this.connectionId,
     required this.modality,
     required this.dateLabel,
     required this.timeLabel,
@@ -188,6 +258,7 @@ class MeetingProposal {
     required this.message,
   });
 
+  final String connectionId;
   final Modality modality;
   final String dateLabel;
   final String timeLabel;

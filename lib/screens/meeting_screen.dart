@@ -7,9 +7,14 @@ import '../theme/app_theme.dart';
 import '../widgets/common.dart';
 
 class MeetingScreen extends StatefulWidget {
-  const MeetingScreen({super.key, required this.repo});
+  const MeetingScreen({
+    super.key,
+    required this.repo,
+    required this.connection,
+  });
 
   final MockRepository repo;
+  final TeamConnection connection;
 
   @override
   State<MeetingScreen> createState() => _MeetingScreenState();
@@ -42,38 +47,42 @@ class _MeetingScreenState extends State<MeetingScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
-          const SectionLabel('MODALIDAD'),
-          ...[Modality.presencial, Modality.virtual].map(
-            (m) => RadioListTile<Modality>(
-              value: m,
-              groupValue: _modality,
-              onChanged: (v) => setState(() => _modality = v!),
-              title: Text(m.label),
-              activeColor: AppColors.violet,
-              contentPadding: EdgeInsets.zero,
+          Text(
+            widget.connection.project.codeName,
+            style: GoogleFonts.dmSans(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w800,
             ),
+          ),
+          const SizedBox(height: 12),
+          const SectionLabel('MODALIDAD'),
+          const SizedBox(height: 8),
+          ModalityChips(
+            value: _modality,
+            onChanged: (v) => setState(() => _modality = v),
+            options: const [Modality.presencial, Modality.virtual],
           ),
           const SizedBox(height: 8),
           TextField(
             controller: _date,
-            decoration: const InputDecoration(hintText: 'Fecha'),
+            decoration: const InputDecoration(labelText: 'Fecha'),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _time,
-            decoration: const InputDecoration(hintText: 'Hora'),
+            decoration: const InputDecoration(labelText: 'Hora'),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _place,
-            decoration: const InputDecoration(hintText: 'Lugar / enlace'),
+            decoration: const InputDecoration(labelText: 'Lugar / enlace'),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _message,
             maxLines: 4,
             decoration: const InputDecoration(
-              hintText: 'Mensaje',
+              labelText: 'Mensaje',
               fillColor: AppColors.violetSoft,
             ),
           ),
@@ -82,6 +91,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
             onPressed: () {
               widget.repo.proposeMeeting(
                 MeetingProposal(
+                  connectionId: widget.connection.id,
                   modality: _modality,
                   dateLabel: _date.text,
                   timeLabel: _time.text,
@@ -92,7 +102,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    'Reunión propuesta (simulación)',
+                    'Reunión propuesta en el chat',
                     style: GoogleFonts.dmSans(),
                   ),
                   backgroundColor: AppColors.violet,
